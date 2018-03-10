@@ -21,11 +21,20 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-SOURCES += \
-        GSPngLib.cpp
+INCLUDEPATH += \
+    Header \
+    Source
 
 HEADERS += \
-        GSPngLib.h
+    Header/GSPngLib.h \
+    Header/GSPngDef.h \
+    Header/IGSPng.h \
+    Source/GSPng.h
+
+SOURCES += \
+    Source/GSPngLib.cpp \
+    Source/GSPng.cpp
+
 unix {
     target.path = /usr/lib
     INSTALLS += target
