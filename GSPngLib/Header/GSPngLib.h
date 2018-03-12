@@ -6,6 +6,9 @@
 
 class GSPngLib
 {
+public:
+    IGSPng * LoadPngFromFile(const QString &path);
+
 private:
     GSPngLib();
 };

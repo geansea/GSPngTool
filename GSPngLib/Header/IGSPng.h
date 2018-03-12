@@ -9,6 +9,17 @@ public:
     virtual ~IGSPng() {}
 
 public:
+    struct Chunk
+    {
+        qint32 length;
+        qint32 type;
+        QByteArray data;
+        quint32 crc;
+
+        Chunk();
+        bool Read(QDataStream &src);
+        bool Write(QDataStream &dst);
+    };
 
 };
 

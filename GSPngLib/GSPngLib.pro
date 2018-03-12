@@ -29,11 +29,11 @@ HEADERS += \
     Header/GSPngLib.h \
     Header/GSPngDef.h \
     Header/IGSPng.h \
-    Source/GSPng.h
+    Source/Core/GSPng.h
 
 SOURCES += \
-    Source/GSPngLib.cpp \
-    Source/GSPng.cpp
+    Source/Core/GSPngLib.cpp \
+    Source/Core/GSPng.cpp
 
 unix {
     target.path = /usr/lib
