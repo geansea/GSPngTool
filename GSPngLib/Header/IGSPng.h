@@ -1,7 +1,8 @@
 #ifndef IGSPNG_H
 #define IGSPNG_H
 
-#include "GSPngDef.h"
+#include <QtCore>
+#include <QtGui>
 
 class IGSPng
 {
@@ -9,18 +10,14 @@ public:
     virtual ~IGSPng() {}
 
 public:
-    struct Chunk
-    {
-        qint32 length;
-        qint32 type;
-        QByteArray data;
-        quint32 crc;
+    virtual int Size() const = 0;
+    virtual int Width() const = 0;
+    virtual int Height() const = 0;
+    virtual QImage Image() const = 0;
 
-        Chunk();
-        bool Read(QDataStream &src);
-        bool Write(QDataStream &dst);
-    };
-
+public:
+    static IGSPng * CreateFromFile(const QString &path);
+    static IGSPng * CreateFromImage(const QImage &image);
 };
 
 #endif // IGSPNG_H
