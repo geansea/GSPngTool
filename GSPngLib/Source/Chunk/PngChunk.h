@@ -5,35 +5,24 @@
 
 class PngChunk
 {
-public:
-    enum Type
-    {
-        IHDR = 'IHDR',
-        UNKNOWN = 0
-    };
-
-    static PngChunk * Create(QDataStream &src);
 
 public:
     PngChunk(quint32 length, qint32 type);
     virtual ~PngChunk();
 
-    int Type() const;
-
-protected:
-    virtual bool Read(QDataStream &src);
-    virtual bool IsValid() const;
-    quint32 ValidCRC() const;
+    virtual Type Type() const;
+    virtual int TypeValue() const;
+    virtual int Size() const;
+    virtual bool Write(QDataStream &dst) const;
 
 public:
-    int Size() const;
-    bool Write(QDataStream &dst);
+    static quint32 Crc(qint32 type, const QByteArray &data);
+    static bool Write(qint32 type, const QByteArray &data, QDataStream &dst);
 
 protected:
-    quint32 m_length;
-    qint32 m_type;
-    QByteArray m_data;
-    quint32 m_crc;
+    qint32      m_type;
+    QByteArray  m_data;
+    quint32     m_crc;
 };
 
 #endif // PNGCHUNK_H

@@ -28,7 +28,9 @@ HEADERS += \
     Source/Core/GSPng.h \
     Source/Chunk/PngChunk.h \
     Source/Core/PngHelper.h \
-    Source/Chunk/PngChunk_IHDR.h
+    Source/Chunk/PngChunk_IHDR.h \
+    Source/Core/PngDef.h \
+    Source/Chunk/IPngChunk.h
 
 SOURCES += \
     Source/Core/GSPng.cpp \

@@ -1,5 +1,6 @@
 #include "PngChunk.h"
 #include "PngChunk_IHDR.h"
+#include "Core/PngDef.h"
 #include <zlib.h>
 
 PngChunk * PngChunk::Create(QDataStream &src)
@@ -16,20 +17,11 @@ PngChunk * PngChunk::Create(QDataStream &src)
     {
         chunk = new PngChunk(length, type);
     }
-    if (chunk == NULL)
-    {
-        return NULL;
-    }
-    if (!chunk->Read(src))
-    {
-        delete chunk;
-        return NULL;
-    }
-    if (!chunk->IsValid())
-    {
-        delete chunk;
-        return NULL;
-    }
+    GSPointerScope<PngChunk> scope(chunk);
+    CheckForReturnNull(chunk != NULL);
+    CheckForReturnNull(chunk->Read(src));
+    CheckForReturnNull(chunk->IsValid());
+    scope.Cancel();
     return chunk;
 }
 
