@@ -1,5 +1,5 @@
 #include "PngChunk.h"
-#include "PngChunk_IHDR.h"
+#include "IHDRChunk.h"
 #include "Core/PngDef.h"
 #include <zlib.h>
 
@@ -9,27 +9,37 @@ PngChunk * PngChunk::Create(QDataStream &src)
     qint32 type = 0;
     src >> length >> type;
     PngChunk *chunk = NULL;
-    if (type == IHDR)
+    switch (type)
     {
-        chunk = new PngChunk_IHDR(length, type);
-    }
-    else
-    {
-        chunk = new PngChunk(length, type);
+    case IHDR:
+        chunk = new IHDRChunk();
+        break;
+    default:
+        chunk = new PngChunk(type);
+        break;
     }
     GSPointerScope<PngChunk> scope(chunk);
-    CheckForReturnNull(chunk != NULL);
-    CheckForReturnNull(chunk->Read(src));
-    CheckForReturnNull(chunk->IsValid());
+    ReturnNullOnFail(chunk->Read(src, length));
+    quint32 crc = 0;
+    src >> crc;
+    ReturnNullOnFail(chunk->GetCRC() != crc);
     scope.Cancel();
     return chunk;
 }
 
-PngChunk::PngChunk(quint32 length, qint32 type)
-    : m_length(length)
-    , m_type(type)
-    , m_data((int)length, 0)
-    , m_crc(0)
+QByteArray IntToBytesBE(int value)
+{
+    QByteArray bytes(4, 0);
+    bytes[0] = (char)((value >> 24) & 0xFF);
+    bytes[1] = (char)((value >> 16) & 0xFF);
+    bytes[2] = (char)((value >> 8) & 0xFF);
+    bytes[3] = (char)(value & 0xFF);
+    return bytes;
+}
+
+PngChunk::PngChunk(qint32 type)
+    : m_type(type)
+    , m_data()
 {
 }
 
@@ -42,36 +52,42 @@ int PngChunk::Type() const
     return (int)m_type;
 }
 
-bool PngChunk::Read(QDataStream &src)
+int PngChunk::Size() const
 {
+    const QByteArray data = GetData();
+    return 4 + 4 + data.size() + 4;
+}
+
+bool PngChunk::Write(QDataStream &dst) const
+{
+    const QByteArray typeBytes = IntToBytesBE(Type());
+    const QByteArray data = GetData();
+    quint32 crc = GetCRC();
+    dst << data.size();
+    dst.writeRawData(typeBytes.data(), typeBytes.size());
+    dst.writeRawData(data.data(), data.size());
+    dst << crc;
+    return QDataStream::Status::Ok == dst.status();
+}
+
+bool PngChunk::Read(QDataStream &src, quint32 length)
+{
+    m_data.resize(length);
     src.readRawData(m_data.data(), m_data.size());
-    src >> m_crc;
     return QDataStream::Status::Ok == src.status();
 }
 
-bool PngChunk::IsValid() const
+QByteArray PngChunk::GetData() const
 {
-    return (int)m_length == m_data.size() && m_crc == ValidCRC();
+    return m_data;
 }
 
-quint32 PngChunk::ValidCRC() const
+quint32 PngChunk::GetCRC() const
 {
+    const QByteArray typeBytes = IntToBytesBE(Type());
+    const QByteArray data = GetData();
     uLong crc = 0;
-    //crc = crc32(crc, &m_type);
-    crc = crc32(crc, (const Bytef *)m_data.data(), (uInt)m_data.size());
+    crc = crc32(crc, (const Bytef *)typeBytes.data(), (uInt)typeBytes.size());
+    crc = crc32(crc, (const Bytef *)data.data(), (uInt)data.size());
     return (quint32)crc;
-}
-
-int PngChunk::Size() const
-{
-    return sizeof(m_length) + sizeof(m_type) + m_data.size() + sizeof(m_crc);
-}
-
-bool PngChunk::Write(QDataStream &dst)
-{
-    dst << m_length;
-    dst << m_type;
-    dst.writeRawData(m_data.data(), m_data.size());
-    dst << m_crc;
-    return QDataStream::Status::Ok == dst.status();
 }

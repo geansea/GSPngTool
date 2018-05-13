@@ -3,7 +3,7 @@
 
 #include <QtCore>
 
-#define CheckForReturnFail(x) do    \
+#define ReturnFailOnFail(x) do    \
 {                                   \
     if (!(x))                       \
     {                               \
@@ -11,13 +11,23 @@
     }                               \
 } while (0)
 
-#define CheckForReturnNull(x) do    \
+#define ReturnNullOnFail(x) do    \
 {                                   \
     if (!(x))                       \
     {                               \
         return NULL;                \
     }                               \
 } while (0)
+
+template<class T>
+inline void SafeDelete(T *&p)
+{
+    if (p != NULL)
+    {
+        delete p;
+        p = NULL;
+    }
+}
 
 template<class T>
 class GSPointerScope
@@ -33,7 +43,7 @@ public:
     {
         if (m_p && !m_cancelled)
         {
-            delete m_p;
+            SafeDelete(m_p);
         }
     }
 

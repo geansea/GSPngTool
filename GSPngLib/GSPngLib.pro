@@ -28,15 +28,14 @@ HEADERS += \
     Source/Core/GSPng.h \
     Source/Chunk/PngChunk.h \
     Source/Core/PngHelper.h \
-    Source/Chunk/PngChunk_IHDR.h \
     Source/Core/PngDef.h \
-    Source/Chunk/IPngChunk.h
+    Source/Chunk/IHDRChunk.h
 
 SOURCES += \
     Source/Core/GSPng.cpp \
     Source/Chunk/PngChunk.cpp \
     Source/Core/PngHelper.cpp \
-    Source/Chunk/PngChunk_IHDR.cpp
+    Source/Chunk/IHDRChunk.cpp
 
 unix {
     target.path = /usr/lib
