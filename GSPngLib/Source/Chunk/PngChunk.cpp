@@ -12,8 +12,8 @@ PngChunk * PngChunk::Create(QDataStream &src)
     switch (type)
     {
     case IHDR:
-        chunk = new IHDRChunk();
-        break;
+        //chunk = new IHDRChunk();
+        //break;
     default:
         chunk = new PngChunk(type);
         break;
@@ -27,7 +27,7 @@ PngChunk * PngChunk::Create(QDataStream &src)
     return chunk;
 }
 
-QByteArray IntToBytesBE(int value)
+QByteArray PngChunk::IntToBytesBE(int value)
 {
     QByteArray bytes(4, 0);
     bytes[0] = (char)((value >> 24) & 0xFF);

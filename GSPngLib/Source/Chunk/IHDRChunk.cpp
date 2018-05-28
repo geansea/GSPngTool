@@ -10,3 +10,13 @@ IHDRChunk::~IHDRChunk()
 {
 
 }
+
+bool IHDRChunk::Read(QDataStream &src, quint32 length)
+{
+    return false;
+}
+
+QByteArray IHDRChunk::GetData() const
+{
+    return QByteArray();
+}

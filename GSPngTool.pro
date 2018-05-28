@@ -1,6 +1,7 @@
 TEMPLATE = subdirs
 
 SUBDIRS += \
-    GSPngLib
+    GSPngLib \
+    GSPngCmd
 
 CONFIG += ordered

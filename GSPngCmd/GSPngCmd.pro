@@ -1,9 +1,10 @@
-TARGET = GSPngLib
-TEMPLATE = lib
-CONFIG += staticlib
+#QT -= gui
+
+CONFIG += c++11 console
+CONFIG -= app_bundle
 
 # The following define makes your compiler emit warnings if you use
-# any feature of Qt which has been marked as deprecated (the exact warnings
+# any feature of Qt which as been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -14,26 +15,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 INCLUDEPATH += \
-    Header \
-    Source
+    $$PWD/../GSPngLib/Header
 
-HEADERS += \
-    Header/IGSPng.h \
-    Source/Core/GSPng.h \
-    Source/Core/PngHelper.h \
-    Source/Core/PngDef.h \
-    Source/Chunk/PngChunk.h \
-    Source/Chunk/IHDRChunk.h
+LIBS += -L \
+    $$PWD/../build
 
-SOURCES += \
-    Source/Core/GSPng.cpp \
-    Source/Core/PngHelper.cpp \
-    Source/Chunk/PngChunk.cpp \
-    Source/Chunk/IHDRChunk.cpp
+LIBS += -l \
+    GSPngLib \
+    zlib
 
-DESTDIR = $$PWD/../build
-
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
+SOURCES += main.cpp

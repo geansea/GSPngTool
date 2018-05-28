@@ -1,4 +1,5 @@
 #include "GSPng.h"
+#include "PngHelper.h"
 #include "PngDef.h"
 
 IGSPng * IGSPng::CreateFromFile(const QString &path)
@@ -32,12 +33,16 @@ GSPng::~GSPng()
 bool GSPng::Open(QDataStream &src)
 {
     Close();
-    while (!src.atEnd())
+    src.setByteOrder(QDataStream::BigEndian);
+    QByteArray header(PngHelper::HEADER.size(), 0);
+    src.readRawData(header.data(), header.size());
+    ReturnFailOnFail(PngHelper::HEADER == header);
+    do
     {
         PngChunk *chunk = PngChunk::Create(src);
         ReturnFailOnFail(chunk != NULL);
         m_chunks.append(chunk);
-    }
+    } while (!src.atEnd());
     ReturnFailOnFail(m_chunks.size() > 0);
     return true;
 }
@@ -64,17 +69,17 @@ int GSPng::Size() const
 
 int GSPng::Width() const
 {
-
+    return 0;
 }
 
 int GSPng::Height() const
 {
-
+    return 0;
 }
 
 QImage GSPng::Image() const
 {
-
+    return QImage();
 }
 
 PngChunk * GSPng::GetChunk(enum PngChunk::Type type) const
