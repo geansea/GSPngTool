@@ -20,18 +20,17 @@ INCLUDEPATH += \
 HEADERS += \
     Header/IGSPng.h \
     Source/Core/GSPng.h \
-    Source/Core/PngHelper.h \
     Source/Core/PngDef.h \
     Source/Chunk/PngChunk.h \
-    Source/Chunk/IHDRChunk.h
+    Source/Chunk/IHDRChunk.h \
+    Header/GSDef.h
 
 SOURCES += \
     Source/Core/GSPng.cpp \
-    Source/Core/PngHelper.cpp \
     Source/Chunk/PngChunk.cpp \
     Source/Chunk/IHDRChunk.cpp
 
-DESTDIR = $$PWD/../build
+DESTDIR = $$PWD/../build/
 
 unix {
     target.path = /usr/lib

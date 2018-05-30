@@ -1,60 +1,16 @@
 #ifndef PNGDEF_H
 #define PNGDEF_H
 
-#include <QtCore>
+#include "GSDef.h"
 
-#define ReturnFailOnFail(x) do    \
-{                                   \
-    if (!(x))                       \
-    {                               \
-        return false;               \
-    }                               \
-} while (0)
-
-#define ReturnNullOnFail(x) do    \
-{                                   \
-    if (!(x))                       \
-    {                               \
-        return NULL;                \
-    }                               \
-} while (0)
-
-template<class T>
-inline void SafeDelete(T *&p)
+enum PngColorMode
 {
-    if (p != NULL)
-    {
-        delete p;
-        p = NULL;
-    }
-}
-
-template<class T>
-class GSPointerScope
-{
-public:
-    GSPointerScope(T *p)
-        : m_p(p)
-        , m_cancelled(false)
-    {
-    }
-
-    ~GSPointerScope()
-    {
-        if (m_p && !m_cancelled)
-        {
-            SafeDelete(m_p);
-        }
-    }
-
-    void Cancel()
-    {
-        m_cancelled = true;
-    }
-
-private:
-    T * m_p;
-    bool m_cancelled;
+    PngGrayscale = 0,
+    PngTruecolor = 2,
+    PngPaletteBased = 3,
+    PngGrayscaleWithAlpha = 4,
+    PngTruecolorWithAlpha = 6,
+    PngColorModeUnknown = -1
 };
 
 #endif // PNGDEF_H

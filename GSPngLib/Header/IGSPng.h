@@ -10,10 +10,10 @@ public:
     virtual ~IGSPng() {}
 
 public:
-    virtual int Size() const = 0;
-    virtual int Width() const = 0;
-    virtual int Height() const = 0;
-    virtual QImage Image() const = 0;
+    virtual int GetSize() const = 0;
+    virtual int GetWidth() const = 0;
+    virtual int GetHeight() const = 0;
+    virtual QImage GetImage() const = 0;
 
 public:
     static IGSPng * CreateFromFile(const QString &path);

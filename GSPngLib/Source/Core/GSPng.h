@@ -4,6 +4,8 @@
 #include "IGSPng.h"
 #include "Chunk/PngChunk.h"
 
+class IHDRChunk;
+
 class GSPng : public IGSPng
 {
 public:
@@ -14,16 +16,17 @@ public:
     void Close();
 
 public:
-    virtual int Size() const;
-    virtual int Width() const;
-    virtual int Height() const;
-    virtual QImage Image() const;
+    virtual int GetSize() const;
+    virtual int GetWidth() const;
+    virtual int GetHeight() const;
+    virtual QImage GetImage() const;
 
 private:
     PngChunk * GetChunk(enum PngChunk::Type type) const;
 
 private:
     QList<PngChunk *> m_chunks;
+    IHDRChunk * m_ihdrChunk;
 };
 
 #endif // GSPNG_H

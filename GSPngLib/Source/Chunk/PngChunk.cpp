@@ -1,19 +1,19 @@
 #include "PngChunk.h"
 #include "IHDRChunk.h"
-#include "Core/PngDef.h"
 #include <zlib.h>
 
 PngChunk * PngChunk::Create(QDataStream &src)
 {
     quint32 length = 0;
     qint32 type = 0;
-    src >> length >> type;
+    src >> length;
+    src >> type;
     PngChunk *chunk = NULL;
     switch (type)
     {
     case IHDR:
-        //chunk = new IHDRChunk();
-        //break;
+        chunk = new IHDRChunk();
+        break;
     default:
         chunk = new PngChunk(type);
         break;
@@ -47,12 +47,12 @@ PngChunk::~PngChunk()
 {
 }
 
-int PngChunk::Type() const
+int PngChunk::GetType() const
 {
-    return (int)m_type;
+    return m_type;
 }
 
-int PngChunk::Size() const
+int PngChunk::GetSize() const
 {
     const QByteArray data = GetData();
     return 4 + 4 + data.size() + 4;

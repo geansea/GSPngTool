@@ -17,11 +17,11 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs depr
 INCLUDEPATH += \
     $$PWD/../GSPngLib/Header
 
-LIBS += -L \
-    $$PWD/../build
-
-LIBS += -l \
-    GSPngLib \
-    zlib
+LIBS += \
+    -L$$PWD/../build \
+    -lGSPngLib \
+    -lz
 
 SOURCES += main.cpp
+
+DESTDIR = $$PWD/../build/

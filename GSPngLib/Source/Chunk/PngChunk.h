@@ -1,7 +1,7 @@
 #ifndef PNGCHUNK_H
 #define PNGCHUNK_H
 
-#include <QtCore>
+#include "Core/PngDef.h"
 
 class PngChunk
 {
@@ -21,8 +21,8 @@ public:
     PngChunk(qint32 type);
     virtual ~PngChunk();
 
-    int Type() const;
-    int Size() const;
+    int GetType() const;
+    int GetSize() const;
     bool Write(QDataStream &dst) const;
 
 protected:

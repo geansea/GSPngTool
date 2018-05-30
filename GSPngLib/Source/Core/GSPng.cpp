@@ -1,6 +1,8 @@
 #include "GSPng.h"
-#include "PngHelper.h"
+#include "Chunk/IHDRChunk.h"
 #include "PngDef.h"
+
+static const QByteArray PNG_HEADER = QByteArray("\x89PNG\x0D\x0A\x1A\x0A");
 
 IGSPng * IGSPng::CreateFromFile(const QString &path)
 {
@@ -22,6 +24,7 @@ IGSPng * IGSPng::CreateFromFile(const QString &path)
 
 GSPng::GSPng()
     : m_chunks()
+    , m_ihdrChunk(NULL)
 {
 }
 
@@ -34,9 +37,9 @@ bool GSPng::Open(QDataStream &src)
 {
     Close();
     src.setByteOrder(QDataStream::BigEndian);
-    QByteArray header(PngHelper::HEADER.size(), 0);
+    QByteArray header(PNG_HEADER.size(), 0);
     src.readRawData(header.data(), header.size());
-    ReturnFailOnFail(PngHelper::HEADER == header);
+    ReturnFailOnFail(PNG_HEADER == header);
     do
     {
         PngChunk *chunk = PngChunk::Create(src);
@@ -44,6 +47,8 @@ bool GSPng::Open(QDataStream &src)
         m_chunks.append(chunk);
     } while (!src.atEnd());
     ReturnFailOnFail(m_chunks.size() > 0);
+    ReturnFailOnFail(m_chunks[0]->GetType() == PngChunk::IHDR);
+    m_ihdrChunk = (IHDRChunk *)m_chunks[0];
     return true;
 }
 
@@ -54,30 +59,39 @@ void GSPng::Close()
         SafeDelete(chunk);
     }
     m_chunks.clear();
+    m_ihdrChunk = NULL;
 }
 
-int GSPng::Size() const
+int GSPng::GetSize() const
 {
     int size = 0;
     foreach (PngChunk *chunk, m_chunks)
     {
-        int chunkSize = chunk->Size();
+        int chunkSize = chunk->GetSize();
         size += chunkSize;
     }
     return size;
 }
 
-int GSPng::Width() const
+int GSPng::GetWidth() const
 {
-    return 0;
+    if (m_ihdrChunk == NULL)
+    {
+        return 0;
+    }
+    return m_ihdrChunk->GetWidth();
 }
 
-int GSPng::Height() const
+int GSPng::GetHeight() const
 {
-    return 0;
+    if (m_ihdrChunk == NULL)
+    {
+        return 0;
+    }
+    return m_ihdrChunk->GetHeight();
 }
 
-QImage GSPng::Image() const
+QImage GSPng::GetImage() const
 {
     return QImage();
 }
@@ -87,7 +101,7 @@ PngChunk * GSPng::GetChunk(enum PngChunk::Type type) const
     PngChunk *ret = NULL;
     foreach (PngChunk *chunk, m_chunks)
     {
-        if (chunk->Type() == type)
+        if (chunk->GetType() == type)
         {
             ret = chunk;
             break;
