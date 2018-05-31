@@ -9,6 +9,9 @@ public:
     enum Type
     {
         IHDR = 'IHDR',
+        PLTE = 'PLTE',
+        IDAT = 'IDAT',
+        IEND = 'IEND',
         UNSUPPORTED = 0
     };
 

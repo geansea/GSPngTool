@@ -1,5 +1,6 @@
 #include "GSPng.h"
 #include "Chunk/IHDRChunk.h"
+#include "Chunk/PLTEChunk.h"
 #include "PngDef.h"
 
 static const QByteArray PNG_HEADER = QByteArray("\x89PNG\x0D\x0A\x1A\x0A");
@@ -25,6 +26,7 @@ IGSPng * IGSPng::CreateFromFile(const QString &path)
 GSPng::GSPng()
     : m_chunks()
     , m_ihdrChunk(NULL)
+    , m_plteChunk(NULL)
 {
 }
 
@@ -47,8 +49,14 @@ bool GSPng::Open(QDataStream &src)
         m_chunks.append(chunk);
     } while (!src.atEnd());
     ReturnFailOnFail(m_chunks.size() > 0);
-    ReturnFailOnFail(m_chunks[0]->GetType() == PngChunk::IHDR);
-    m_ihdrChunk = (IHDRChunk *)m_chunks[0];
+    ReturnFailOnFail(m_chunks.first()->GetType() == PngChunk::IHDR);
+    ReturnFailOnFail(m_chunks.last()->GetType() == PngChunk::IEND);
+
+    m_ihdrChunk = (IHDRChunk *)m_chunks.first();
+    if (IsPaletteBased())
+    {
+        m_plteChunk = (PLTEChunk *)GetChunk(PngChunk::PLTE);
+    }
     return true;
 }
 
@@ -89,6 +97,15 @@ int GSPng::GetHeight() const
         return 0;
     }
     return m_ihdrChunk->GetHeight();
+}
+
+bool GSPng::IsPaletteBased() const
+{
+    if (m_ihdrChunk == NULL)
+    {
+        return false;
+    }
+    return m_ihdrChunk->GetColorMode() == PngPaletteBased;
 }
 
 QImage GSPng::GetImage() const

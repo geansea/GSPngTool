@@ -1,5 +1,6 @@
 #include "PngChunk.h"
 #include "IHDRChunk.h"
+#include "PLTEChunk.h"
 #include <zlib.h>
 
 PngChunk * PngChunk::Create(QDataStream &src)
@@ -13,6 +14,9 @@ PngChunk * PngChunk::Create(QDataStream &src)
     {
     case IHDR:
         chunk = new IHDRChunk();
+        break;
+    case PLTE:
+        chunk = new PLTEChunk();
         break;
     default:
         chunk = new PngChunk(type);

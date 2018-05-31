@@ -5,6 +5,7 @@
 #include "Chunk/PngChunk.h"
 
 class IHDRChunk;
+class PLTEChunk;
 
 class GSPng : public IGSPng
 {
@@ -19,6 +20,7 @@ public:
     virtual int GetSize() const;
     virtual int GetWidth() const;
     virtual int GetHeight() const;
+    virtual bool IsPaletteBased() const;
     virtual QImage GetImage() const;
 
 private:
@@ -27,6 +29,7 @@ private:
 private:
     QList<PngChunk *> m_chunks;
     IHDRChunk * m_ihdrChunk;
+    PLTEChunk * m_plteChunk;
 };
 
 #endif // GSPNG_H

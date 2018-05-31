@@ -18,17 +18,21 @@ INCLUDEPATH += \
     Source
 
 HEADERS += \
+    Header/GSDef.h \
     Header/IGSPng.h \
     Source/Core/GSPng.h \
     Source/Core/PngDef.h \
     Source/Chunk/PngChunk.h \
     Source/Chunk/IHDRChunk.h \
-    Header/GSDef.h
+    Source/Chunk/PLTEChunk.h \
+    Source/Chunk/IDATChunk.h
 
 SOURCES += \
     Source/Core/GSPng.cpp \
     Source/Chunk/PngChunk.cpp \
-    Source/Chunk/IHDRChunk.cpp
+    Source/Chunk/IHDRChunk.cpp \
+    Source/Chunk/PLTEChunk.cpp \
+    Source/Chunk/IDATChunk.cpp
 
 DESTDIR = $$PWD/../build/
 
