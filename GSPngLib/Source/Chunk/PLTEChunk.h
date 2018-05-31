@@ -14,8 +14,8 @@ public:
     const QVector<QColor> & GetColors() const;
 
 protected:
-    virtual bool Read(QDataStream &src, quint32 length);
-    virtual QByteArray GetData() const;
+    virtual bool LoadData();
+    virtual void UpdateData();
 
 private:
     QVector<QColor> m_colors;

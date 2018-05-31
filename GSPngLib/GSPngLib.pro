@@ -20,8 +20,9 @@ INCLUDEPATH += \
 HEADERS += \
     Header/GSDef.h \
     Header/IGSPng.h \
-    Source/Core/GSPng.h \
     Source/Core/PngDef.h \
+    Source/Core/GSPng.h \
+    Source/Core/PngHelper.h \
     Source/Chunk/PngChunk.h \
     Source/Chunk/IHDRChunk.h \
     Source/Chunk/PLTEChunk.h \
@@ -29,6 +30,7 @@ HEADERS += \
 
 SOURCES += \
     Source/Core/GSPng.cpp \
+    Source/Core/PngHelper.cpp \
     Source/Chunk/PngChunk.cpp \
     Source/Chunk/IHDRChunk.cpp \
     Source/Chunk/PLTEChunk.cpp \

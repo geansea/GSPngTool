@@ -15,23 +15,27 @@ const QVector<QColor> & PLTEChunk::GetColors() const
     return m_colors;
 }
 
-bool PLTEChunk::Read(QDataStream &src, quint32 length)
+bool PLTEChunk::LoadData()
 {
-    ReturnFailOnFail(length % 3 == 0);
+    PngChunk::LoadData();
+    ReturnFailOnFail(m_data.size() % 3 == 0);
+    QDataStream src(&m_data, QIODevice::ReadOnly);
     quint32 r = 0, g = 0, b = 0;
-    for (quint32 i = 0; i < length / 3; ++i)
+    for (quint32 i = 0; i < m_data.size() / 3; ++i)
     {
         src >> r >> g >> b;
         QColor color(r, g, b);
         m_colors.append(color);
     }
-    return QDataStream::Status::Ok == src.status();
+    ReturnFailOnFail(src.status() == QDataStream::Status::Ok);
+    ReturnFailOnFail(src.atEnd());
+    return true;
 }
 
-QByteArray PLTEChunk::GetData() const
+void PLTEChunk::UpdateData()
 {
-    QByteArray data(m_colors.size() * 3, 0);
-    QDataStream dst(&data, QIODevice::WriteOnly);
+    m_data.resize(m_colors.size() * 3);
+    QDataStream dst(&m_data, QIODevice::WriteOnly);
     quint32 r = 0, g = 0, b = 0;
     for (int i = 0; i < m_colors.size(); ++i)
     {
@@ -41,5 +45,5 @@ QByteArray PLTEChunk::GetData() const
         b = (quint32)color.blue();
         dst << r << g << b;
     }
-    return data;
+    PngChunk::UpdateData();
 }

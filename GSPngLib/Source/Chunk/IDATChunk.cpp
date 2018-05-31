@@ -16,14 +16,15 @@ const QByteArray & IDATChunk::GetImageData() const
     return m_imageData;
 }
 
-bool IDATChunk::Read(QDataStream &src, quint32 length)
+bool IDATChunk::LoadData()
 {
-    ReturnFailOnFail(PngChunk::Read(src, length));
+    PngChunk::LoadData();
     m_imageData = qUncompress(m_data);
     return true;
 }
 
-QByteArray IDATChunk::GetData() const
+void IDATChunk::UpdateData()
 {
-    return qCompress(m_imageData);
+    m_data = qCompress(m_imageData);
+    PngChunk::UpdateData();
 }

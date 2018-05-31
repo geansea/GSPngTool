@@ -67,9 +67,11 @@ int IHDRChunk::GetInterlaceMethod() const
     return m_interlaceMethod;
 }
 
-bool IHDRChunk::Read(QDataStream &src, quint32 length)
+bool IHDRChunk::LoadData()
 {
-    ReturnFailOnFail(length == CHUNK_LENGTH);
+    PngChunk::LoadData();
+    ReturnFailOnFail(m_data.size() == CHUNK_LENGTH);
+    QDataStream src(&m_data, QIODevice::ReadOnly);
     src >> m_width;
     src >> m_height;
     src >> m_bitDepth;
@@ -77,13 +79,15 @@ bool IHDRChunk::Read(QDataStream &src, quint32 length)
     src >> m_compressionMethod;
     src >> m_filterMethod;
     src >> m_interlaceMethod;
-    return QDataStream::Status::Ok == src.status();
+    ReturnFailOnFail(src.status() == QDataStream::Status::Ok);
+    ReturnFailOnFail(src.atEnd());
+    return true;
 }
 
-QByteArray IHDRChunk::GetData() const
+void IHDRChunk::UpdateData()
 {
-    QByteArray data(CHUNK_LENGTH, 0);
-    QDataStream dst(&data, QIODevice::WriteOnly);
+    m_data.resize(CHUNK_LENGTH);
+    QDataStream dst(&m_data, QIODevice::WriteOnly);
     dst << m_width;
     dst << m_height;
     dst << m_bitDepth;
@@ -91,5 +95,5 @@ QByteArray IHDRChunk::GetData() const
     dst << m_compressionMethod;
     dst << m_filterMethod;
     dst << m_interlaceMethod;
-    return data;
+    PngChunk::UpdateData();
 }

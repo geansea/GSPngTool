@@ -17,20 +17,19 @@ public:
 
     static PngChunk * Create(QDataStream &src);
 
-protected:
-    static QByteArray IntToBytesBE(int value);
-
 public:
     PngChunk(qint32 type);
     virtual ~PngChunk();
 
     int GetType() const;
     int GetSize() const;
-    bool Write(QDataStream &dst) const;
+
+    bool Read(QDataStream &src, quint32 length);
+    bool Write(QDataStream &dst);
 
 protected:
-    virtual bool Read(QDataStream &src, quint32 length);
-    virtual QByteArray GetData() const;
+    virtual bool LoadData();
+    virtual void UpdateData();
 
 private:
     quint32 GetCRC() const;
@@ -38,6 +37,7 @@ private:
 protected:
     qint32      m_type;
     QByteArray  m_data;
+    bool        m_dataChanged;
 };
 
 #endif // PNGCHUNK_H

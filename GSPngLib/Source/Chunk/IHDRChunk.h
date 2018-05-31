@@ -19,8 +19,8 @@ public:
     int GetInterlaceMethod() const;
 
 protected:
-    virtual bool Read(QDataStream &src, quint32 length);
-    virtual QByteArray GetData() const;
+    virtual bool LoadData();
+    virtual void UpdateData();
 
 private:
     qint32 m_width;
