@@ -17,6 +17,9 @@ public:
     virtual QImage GetImage() const = 0;
 
 public:
+    virtual bool WriteToFile(const QString &path) const = 0;
+
+public:
     static IGSPng * CreateFromFile(const QString &path);
     //static IGSPng * CreateFromImage(const QImage &image);
 };

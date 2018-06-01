@@ -12,6 +12,8 @@ int showInfo(QString filePath)
     printf("size: %d\n", png->GetSize());
     printf("width: %d\n", png->GetWidth());
     printf("height: %d\n", png->GetHeight());
+
+    //png->WriteToFile("testout.png");
     SafeDelete(png);
     return 0;
 }

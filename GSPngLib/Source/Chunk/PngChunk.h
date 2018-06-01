@@ -29,15 +29,15 @@ public:
 
 protected:
     virtual bool LoadData();
-    virtual void UpdateData();
+    virtual bool UpdateData();
 
 private:
     quint32 GetCRC() const;
 
 protected:
-    qint32      m_type;
-    QByteArray  m_data;
-    bool        m_dataChanged;
+    qint32     m_type;
+    QByteArray m_data;
+    bool       m_dataChanged;
 };
 
 #endif // PNGCHUNK_H

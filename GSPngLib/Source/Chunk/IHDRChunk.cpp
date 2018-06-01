@@ -7,7 +7,7 @@ IHDRChunk::IHDRChunk()
     , m_width(0)
     , m_height(0)
     , m_bitDepth(0)
-    , m_colorMode(0)
+    , m_colorType(0)
     , m_compressionMethod(0)
     , m_filterMethod(0)
     , m_interlaceMethod(0)
@@ -33,16 +33,16 @@ int IHDRChunk::GetBitDepth() const
     return m_bitDepth;
 }
 
-PngColorMode IHDRChunk::GetColorMode() const
+PngColorType IHDRChunk::GetColorType() const
 {
-    switch (m_colorMode)
+    switch (m_colorType)
     {
     case PngGrayscale:
         return PngGrayscale;
     case PngTruecolor:
         return PngTruecolor;
-    case PngPaletteBased:
-        return PngPaletteBased;
+    case PngIndexedColor:
+        return PngIndexedColor;
     case PngGrayscaleWithAlpha:
         return PngGrayscaleWithAlpha;
     case PngTruecolorWithAlpha:
@@ -69,13 +69,13 @@ int IHDRChunk::GetInterlaceMethod() const
 
 bool IHDRChunk::LoadData()
 {
-    PngChunk::LoadData();
+    ReturnFailOnFail(PngChunk::LoadData());
     ReturnFailOnFail(m_data.size() == CHUNK_LENGTH);
     QDataStream src(&m_data, QIODevice::ReadOnly);
     src >> m_width;
     src >> m_height;
     src >> m_bitDepth;
-    src >> m_colorMode;
+    src >> m_colorType;
     src >> m_compressionMethod;
     src >> m_filterMethod;
     src >> m_interlaceMethod;
@@ -84,16 +84,19 @@ bool IHDRChunk::LoadData()
     return true;
 }
 
-void IHDRChunk::UpdateData()
+bool IHDRChunk::UpdateData()
 {
     m_data.resize(CHUNK_LENGTH);
     QDataStream dst(&m_data, QIODevice::WriteOnly);
     dst << m_width;
     dst << m_height;
     dst << m_bitDepth;
-    dst << m_colorMode;
+    dst << m_colorType;
     dst << m_compressionMethod;
     dst << m_filterMethod;
     dst << m_interlaceMethod;
-    PngChunk::UpdateData();
+    ReturnFailOnFail(dst.status() == QDataStream::Status::Ok);
+    ReturnFailOnFail(dst.atEnd());
+    ReturnFailOnFail(PngChunk::UpdateData());
+    return true;
 }

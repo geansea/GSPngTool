@@ -15,7 +15,7 @@ public:
 
 protected:
     virtual bool LoadData();
-    virtual void UpdateData();
+    virtual bool UpdateData();
 
 private:
     QVector<QColor> m_colors;

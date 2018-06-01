@@ -23,6 +23,9 @@ public:
     virtual bool IsPaletteBased() const;
     virtual QImage GetImage() const;
 
+public:
+    virtual bool WriteToFile(const QString &path) const;
+
 private:
     PngChunk * GetChunk(enum PngChunk::Type type) const;
 

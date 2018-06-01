@@ -1,5 +1,4 @@
 #include "IDATChunk.h"
-#include <zlib.h>
 
 IDATChunk::IDATChunk()
     : PngChunk(IDAT)
@@ -18,13 +17,14 @@ const QByteArray & IDATChunk::GetImageData() const
 
 bool IDATChunk::LoadData()
 {
-    PngChunk::LoadData();
+    ReturnFailOnFail(PngChunk::LoadData());
     m_imageData = qUncompress(m_data);
     return true;
 }
 
-void IDATChunk::UpdateData()
+bool IDATChunk::UpdateData()
 {
     m_data = qCompress(m_imageData);
-    PngChunk::UpdateData();
+    ReturnFailOnFail(PngChunk::UpdateData());
+    return true;
 }

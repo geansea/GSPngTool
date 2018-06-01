@@ -14,7 +14,7 @@ public:
 
 protected:
     virtual bool LoadData();
-    virtual void UpdateData();
+    virtual bool UpdateData();
 
 private:
     QByteArray m_imageData;

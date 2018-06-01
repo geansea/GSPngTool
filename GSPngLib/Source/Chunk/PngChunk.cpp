@@ -26,7 +26,7 @@ PngChunk * PngChunk::Create(QDataStream &src)
     ReturnNullOnFail(chunk->Read(src, length));
     quint32 crc = 0;
     src >> crc;
-    //ReturnNullOnFail(chunk->GetCRC() != crc);
+    ReturnNullOnFail(chunk->GetCRC() == crc);
     scope.Cancel();
     return chunk;
 }
@@ -65,7 +65,7 @@ bool PngChunk::Write(QDataStream &dst)
 {
     if (m_dataChanged)
     {
-        UpdateData();
+        ReturnFailOnFail(UpdateData());
     }
     dst << m_data.size();
     dst << m_type;
@@ -77,18 +77,19 @@ bool PngChunk::Write(QDataStream &dst)
 
 bool PngChunk::LoadData()
 {
+    return true;
 }
 
-void PngChunk::UpdateData()
+bool PngChunk::UpdateData()
 {
     m_dataChanged = false;
+    return true;
 }
 
 quint32 PngChunk::GetCRC() const
 {
-    QByteArray typeBytes = PngHelper::IntToBytesBE(m_type);
     quint32 crc = 0;
-    crc = PngHelper::UpdateCRC32(crc, typeBytes);
+    crc = PngHelper::UpdateCRC32(crc, PngHelper::IntToBytesBE(m_type));
     crc = PngHelper::UpdateCRC32(crc, m_data);
     return crc;
 }

@@ -19,8 +19,7 @@ INCLUDEPATH += \
 
 LIBS += \
     -L$$PWD/../build \
-    -lGSPngLib \
-    -lz
+    -lGSPngLib
 
 SOURCES += main.cpp
 

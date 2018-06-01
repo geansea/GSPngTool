@@ -8,18 +8,14 @@ static const QByteArray PNG_HEADER = QByteArray("\x89PNG\x0D\x0A\x1A\x0A");
 IGSPng * IGSPng::CreateFromFile(const QString &path)
 {
     QFile file(path);
-    if (!file.open(QIODevice::ReadOnly))
-    {
-        return NULL;
-    }
+    ReturnNullOnFail(file.open(QIODevice::ReadOnly));
+    QDataStream stream(&file);
+    stream.setByteOrder(QDataStream::BigEndian);
+
     GSPng *png = new GSPng();
-    if (png != NULL)
-    {
-        QDataStream stream(&file);
-        stream.setByteOrder(QDataStream::BigEndian);
-        png->Open(stream);
-    }
-    file.close();
+    GSPointerScope<GSPng> scope(png);
+    ReturnNullOnFail(png->Open(stream));
+    scope.Cancel();
     return png;
 }
 
@@ -40,7 +36,7 @@ bool GSPng::Open(QDataStream &src)
     Close();
     src.setByteOrder(QDataStream::BigEndian);
     QByteArray header(PNG_HEADER.size(), 0);
-    src.readRawData(header.data(), header.size());
+    ReturnFailOnFail(src.readRawData(header.data(), header.size()) == header.size());
     ReturnFailOnFail(PNG_HEADER == header);
     do
     {
@@ -72,7 +68,7 @@ void GSPng::Close()
 
 int GSPng::GetSize() const
 {
-    int size = 0;
+    int size = PNG_HEADER.size();
     foreach (PngChunk *chunk, m_chunks)
     {
         int chunkSize = chunk->GetSize();
@@ -105,12 +101,27 @@ bool GSPng::IsPaletteBased() const
     {
         return false;
     }
-    return m_ihdrChunk->GetColorMode() == PngPaletteBased;
+    return m_ihdrChunk->GetColorType() == PngIndexedColor;
 }
 
 QImage GSPng::GetImage() const
 {
     return QImage();
+}
+
+bool GSPng::WriteToFile(const QString &path) const
+{
+    QFile file(path);
+    ReturnFailOnFail(file.open(QIODevice::WriteOnly));
+    QDataStream dst(&file);
+    dst.setByteOrder(QDataStream::BigEndian);
+
+    ReturnFailOnFail(dst.writeRawData(PNG_HEADER.data(), PNG_HEADER.size()) == PNG_HEADER.size());
+    foreach (PngChunk *chunk, m_chunks)
+    {
+        ReturnFailOnFail(chunk->Write(dst));
+    }
+    return true;
 }
 
 PngChunk * GSPng::GetChunk(enum PngChunk::Type type) const

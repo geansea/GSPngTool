@@ -3,11 +3,13 @@
 
 #include "GSDef.h"
 
-enum PngColorMode
+// https://www.w3.org/TR/PNG/
+
+enum PngColorType
 {
     PngGrayscale = 0,
     PngTruecolor = 2,
-    PngPaletteBased = 3,
+    PngIndexedColor = 3,
     PngGrayscaleWithAlpha = 4,
     PngTruecolorWithAlpha = 6,
     PngColorModeUnknown = -1

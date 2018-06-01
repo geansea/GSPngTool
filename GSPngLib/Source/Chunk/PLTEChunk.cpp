@@ -17,33 +17,28 @@ const QVector<QColor> & PLTEChunk::GetColors() const
 
 bool PLTEChunk::LoadData()
 {
-    PngChunk::LoadData();
+    ReturnFailOnFail(PngChunk::LoadData());
     ReturnFailOnFail(m_data.size() % 3 == 0);
-    QDataStream src(&m_data, QIODevice::ReadOnly);
-    quint32 r = 0, g = 0, b = 0;
-    for (quint32 i = 0; i < m_data.size() / 3; ++i)
+    for (int i = 0; i < m_data.size(); i += 3)
     {
-        src >> r >> g >> b;
-        QColor color(r, g, b);
-        m_colors.append(color);
+        quint8 r = (quint8)m_data[i];
+        quint8 g = (quint8)m_data[i + 1];
+        quint8 b = (quint8)m_data[i + 2];
+        m_colors.append(QColor(r, g, b));
     }
-    ReturnFailOnFail(src.status() == QDataStream::Status::Ok);
-    ReturnFailOnFail(src.atEnd());
     return true;
 }
 
-void PLTEChunk::UpdateData()
+bool PLTEChunk::UpdateData()
 {
     m_data.resize(m_colors.size() * 3);
-    QDataStream dst(&m_data, QIODevice::WriteOnly);
-    quint32 r = 0, g = 0, b = 0;
     for (int i = 0; i < m_colors.size(); ++i)
     {
         const QColor &color = m_colors[i];
-        r = (quint32)color.red();
-        g = (quint32)color.green();
-        b = (quint32)color.blue();
-        dst << r << g << b;
+        m_data[i * 3]     = (char)color.red();
+        m_data[i * 3 + 1] = (char)color.green();
+        m_data[i * 3 + 2] = (char)color.blue();
     }
-    PngChunk::UpdateData();
+    ReturnFailOnFail(PngChunk::UpdateData());
+    return true;
 }
