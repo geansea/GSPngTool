@@ -12,6 +12,7 @@ public:
         PLTE = 'PLTE',
         IDAT = 'IDAT',
         IEND = 'IEND',
+        tRNS = 'tRNS',
         UNSUPPORTED = 0
     };
 
@@ -37,7 +38,6 @@ private:
 protected:
     qint32     m_type;
     QByteArray m_data;
-    bool       m_dataChanged;
 };
 
 #endif // PNGCHUNK_H

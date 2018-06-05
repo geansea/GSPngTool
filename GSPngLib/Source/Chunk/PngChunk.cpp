@@ -34,7 +34,6 @@ PngChunk * PngChunk::Create(QDataStream &src)
 PngChunk::PngChunk(qint32 type)
     : m_type(type)
     , m_data()
-    , m_dataChanged(false)
 {
 }
 
@@ -63,10 +62,7 @@ bool PngChunk::Read(QDataStream &src, quint32 length)
 
 bool PngChunk::Write(QDataStream &dst)
 {
-    if (m_dataChanged)
-    {
-        ReturnFailOnFail(UpdateData());
-    }
+    ReturnFailOnFail(UpdateData());
     dst << m_data.size();
     dst << m_type;
     dst.writeRawData(m_data.data(), m_data.size());
@@ -82,7 +78,6 @@ bool PngChunk::LoadData()
 
 bool PngChunk::UpdateData()
 {
-    m_dataChanged = false;
     return true;
 }
 

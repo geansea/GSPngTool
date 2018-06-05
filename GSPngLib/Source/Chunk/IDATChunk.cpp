@@ -10,21 +10,12 @@ IDATChunk::~IDATChunk()
 {
 }
 
-const QByteArray & IDATChunk::GetImageData() const
+QByteArray IDATChunk::GetImageData() const
 {
-    return m_imageData;
+    return qUncompress(m_data);
 }
 
-bool IDATChunk::LoadData()
+void IDATChunk::SetImageData(const QByteArray &imageData)
 {
-    ReturnFailOnFail(PngChunk::LoadData());
-    m_imageData = qUncompress(m_data);
-    return true;
-}
-
-bool IDATChunk::UpdateData()
-{
-    m_data = qCompress(m_imageData);
-    ReturnFailOnFail(PngChunk::UpdateData());
-    return true;
+    m_data = qCompress(imageData);
 }

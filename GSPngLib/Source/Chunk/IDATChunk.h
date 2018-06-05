@@ -10,7 +10,8 @@ public:
     virtual ~IDATChunk();
 
 public:
-    const QByteArray & GetImageData() const;
+    QByteArray GetImageData() const;
+    void SetImageData(const QByteArray &imageData);
 
 protected:
     virtual bool LoadData();
