@@ -26,7 +26,9 @@ HEADERS += \
     Source/Chunk/PngChunk.h \
     Source/Chunk/IHDRChunk.h \
     Source/Chunk/PLTEChunk.h \
-    Source/Chunk/IDATChunk.h
+    Source/Chunk/IDATChunk.h \
+    Source/Chunk/TRNSChunk.h \
+    Source/Core/GSLogger.h
 
 SOURCES += \
     Source/Core/GSPng.cpp \
@@ -34,7 +36,9 @@ SOURCES += \
     Source/Chunk/PngChunk.cpp \
     Source/Chunk/IHDRChunk.cpp \
     Source/Chunk/PLTEChunk.cpp \
-    Source/Chunk/IDATChunk.cpp
+    Source/Chunk/IDATChunk.cpp \
+    Source/Chunk/TRNSChunk.cpp \
+    Source/Core/GSLogger.cpp
 
 DESTDIR = $$PWD/../build/
 

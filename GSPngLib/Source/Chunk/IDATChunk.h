@@ -16,9 +16,6 @@ public:
 protected:
     virtual bool LoadData();
     virtual bool UpdateData();
-
-private:
-    QByteArray m_imageData;
 };
 
 #endif // IDATCHUNK_H

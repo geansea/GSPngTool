@@ -2,6 +2,7 @@
 #define PNGDEF_H
 
 #include "GSDef.h"
+#include <QtGui>
 
 // https://www.w3.org/TR/PNG/
 

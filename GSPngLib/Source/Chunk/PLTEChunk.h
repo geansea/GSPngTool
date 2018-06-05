@@ -2,7 +2,6 @@
 #define PLTECHUNK_H
 
 #include "PngChunk.h"
-#include <QColor>
 
 class PLTEChunk : public PngChunk
 {
@@ -11,14 +10,14 @@ public:
     virtual ~PLTEChunk();
 
 public:
-    const QVector<QColor> & GetColors() const;
+    const QVector<QRgb> & GetColors() const;
 
 protected:
     virtual bool LoadData();
     virtual bool UpdateData();
 
 private:
-    QVector<QColor> m_colors;
+    QVector<QRgb> m_colors;
 };
 
 #endif // PLTECHUNK_H

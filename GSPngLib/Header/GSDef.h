@@ -3,18 +3,36 @@
 
 #include <QtCore>
 
-#define ReturnFailOnFail(x) do    \
+#define ReturnFailOnFail(x) do  \
+{                               \
+    if (!(x))                   \
+    {                           \
+        return false;           \
+    }                           \
+} while (0)
+
+#define ReturnNullOnFail(x) do  \
+{                               \
+    if (!(x))                   \
+    {                           \
+        return NULL;            \
+    }                           \
+} while (0)
+
+#define ReturnFailCheck(x, msg) do  \
 {                                   \
     if (!(x))                       \
     {                               \
+        GSError(msg);               \
         return false;               \
     }                               \
 } while (0)
 
-#define ReturnNullOnFail(x) do    \
+#define ReturnNullCheck(x, msg) do  \
 {                                   \
     if (!(x))                       \
     {                               \
+        GSError(msg);               \
         return NULL;                \
     }                               \
 } while (0)
@@ -56,5 +74,10 @@ private:
     T * m_p;
     bool m_cancelled;
 };
+
+void GSLog(QString msg);
+void GSWarning(QString msg);
+void GSError(QString msg);
+QString GSGetLog();
 
 #endif // GSDEF_H

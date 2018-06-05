@@ -2,7 +2,6 @@
 
 IDATChunk::IDATChunk()
     : PngChunk(IDAT)
-    , m_imageData()
 {
 }
 
