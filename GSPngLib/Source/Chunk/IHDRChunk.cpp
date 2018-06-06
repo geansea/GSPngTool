@@ -71,7 +71,7 @@ bool IHDRChunk::LoadData()
 {
     ReturnFailOnFail(PngChunk::LoadData());
     ReturnFailOnFail(m_data.size() == CHUNK_LENGTH);
-    QDataStream src(&m_data, QIODevice::ReadOnly);
+    QDataStream src(m_data);
     src >> m_width;
     src >> m_height;
     src >> m_bitDepth;

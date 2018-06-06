@@ -10,13 +10,13 @@ public:
     virtual ~TRNSChunk();
 
 public:
-    quint16 GetGrayscale();
+    quint16 GetGrayscale() const;
     void SetGrayscale(quint16 gray);
 
-    QRgba64 GetTruecolor();
+    QRgba64 GetTruecolor() const;
     void SetTruecolor(QRgba64 rgb);
 
-    QVector<quint8> GetIndexedAlpha();
+    QVector<quint8> GetIndexedAlpha() const;
     void SetIndexedAlpha(const QVector<quint8> &alphas);
 };
 

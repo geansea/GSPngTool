@@ -9,14 +9,14 @@ TRNSChunk::~TRNSChunk()
 {
 }
 
-quint16 TRNSChunk::GetGrayscale()
+quint16 TRNSChunk::GetGrayscale() const
 {
     if (m_data.size() != 2)
     {
         GSWarning("Data size of tRNS chunk should be 2");
         return 0;
     }
-    QDataStream src(&m_data, QIODevice::ReadOnly);
+    QDataStream src(m_data);
     quint16 gray = 0;
     src >> gray;
     return gray;
@@ -26,14 +26,14 @@ void TRNSChunk::SetGrayscale(quint16 gray)
 {
 }
 
-QRgba64 TRNSChunk::GetTruecolor()
+QRgba64 TRNSChunk::GetTruecolor() const
 {
     if (m_data.size() != 6)
     {
         GSWarning("Data size of tRNS chunk should be 6");
         return QRgba64();
     }
-    QDataStream src(&m_data, QIODevice::ReadOnly);
+    QDataStream src(m_data);
     quint16 r = 0;
     quint16 g = 0;
     quint16 b = 0;
@@ -45,7 +45,7 @@ void TRNSChunk::SetTruecolor(QRgba64 rgb)
 {
 }
 
-QVector<quint8> TRNSChunk::GetIndexedAlpha()
+QVector<quint8> TRNSChunk::GetIndexedAlpha() const
 {
     QVector<quint8> alphas(m_data.size(), 0);
     for (int i = 0; i < m_data.size(); ++i)
