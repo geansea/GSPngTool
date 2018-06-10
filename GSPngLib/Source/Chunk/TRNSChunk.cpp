@@ -17,6 +17,7 @@ quint16 TRNSChunk::GetGrayscale() const
         return 0;
     }
     QDataStream src(m_data);
+    src.setByteOrder(QDataStream::BigEndian);
     quint16 gray = 0;
     src >> gray;
     return gray;
@@ -24,6 +25,10 @@ quint16 TRNSChunk::GetGrayscale() const
 
 void TRNSChunk::SetGrayscale(quint16 gray)
 {
+    m_data.resize(2);
+    QDataStream dst(&m_data, QIODevice::WriteOnly);
+    dst.setByteOrder(QDataStream::BigEndian);
+    dst << gray;
 }
 
 QRgba64 TRNSChunk::GetTruecolor() const
@@ -34,6 +39,7 @@ QRgba64 TRNSChunk::GetTruecolor() const
         return QRgba64();
     }
     QDataStream src(m_data);
+    src.setByteOrder(QDataStream::BigEndian);
     quint16 r = 0;
     quint16 g = 0;
     quint16 b = 0;
@@ -43,6 +49,12 @@ QRgba64 TRNSChunk::GetTruecolor() const
 
 void TRNSChunk::SetTruecolor(QRgba64 rgb)
 {
+    m_data.resize(6);
+    QDataStream dst(&m_data, QIODevice::WriteOnly);
+    dst.setByteOrder(QDataStream::BigEndian);
+    dst << rgb.red();
+    dst << rgb.green();
+    dst << rgb.blue();
 }
 
 QVector<quint8> TRNSChunk::GetIndexedAlpha() const

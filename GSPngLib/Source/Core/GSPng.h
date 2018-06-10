@@ -14,6 +14,7 @@ public:
     virtual ~GSPng();
 
     bool Open(QDataStream &src);
+    bool Open(const QImage &image);
     void Close();
 
 public:

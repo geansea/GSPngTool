@@ -21,7 +21,7 @@ public:
 
 public:
     static IGSPng * CreateFromFile(const QString &path);
-    //static IGSPng * CreateFromImage(const QImage &image);
+    static IGSPng * CreateFromImage(const QImage &image);
 };
 
 #endif // IGSPNG_H

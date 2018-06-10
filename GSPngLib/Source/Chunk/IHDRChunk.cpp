@@ -72,6 +72,7 @@ bool IHDRChunk::LoadData()
     ReturnFailOnFail(PngChunk::LoadData());
     ReturnFailOnFail(m_data.size() == CHUNK_LENGTH);
     QDataStream src(m_data);
+    src.setByteOrder(QDataStream::BigEndian);
     src >> m_width;
     src >> m_height;
     src >> m_bitDepth;
@@ -88,6 +89,7 @@ bool IHDRChunk::UpdateData()
 {
     m_data.resize(CHUNK_LENGTH);
     QDataStream dst(&m_data, QIODevice::WriteOnly);
+    dst.setByteOrder(QDataStream::BigEndian);
     dst << m_width;
     dst << m_height;
     dst << m_bitDepth;

@@ -19,6 +19,15 @@ IGSPng * IGSPng::CreateFromFile(const QString &path)
     return png;
 }
 
+IGSPng * IGSPng::CreateFromImage(const QImage &image)
+{
+    GSPng *png = new GSPng();
+    GSPointerScope<GSPng> scope(png);
+    ReturnNullOnFail(png->Open(image));
+    scope.Cancel();
+    return png;
+}
+
 GSPng::GSPng()
     : m_chunks()
     , m_ihdrChunk(NULL)
@@ -53,6 +62,12 @@ bool GSPng::Open(QDataStream &src)
     {
         m_plteChunk = (PLTEChunk *)GetChunk(PngChunk::PLTE);
     }
+    return true;
+}
+
+bool GSPng::Open(const QImage &image)
+{
+    Q_UNUSED(image);
     return true;
 }
 

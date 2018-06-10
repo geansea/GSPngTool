@@ -19,26 +19,26 @@ INCLUDEPATH += \
 
 HEADERS += \
     Header/GSDef.h \
-    Header/IGSPng.h \
-    Source/Core/PngDef.h \
-    Source/Core/GSPng.h \
-    Source/Core/PngHelper.h \
-    Source/Chunk/PngChunk.h \
-    Source/Chunk/IHDRChunk.h \
-    Source/Chunk/PLTEChunk.h \
-    Source/Chunk/IDATChunk.h \
-    Source/Chunk/TRNSChunk.h \
-    Source/Core/GSLogger.h
+    Header/IGSPng.h
 
 SOURCES += \
+    Source/Core/PngDef.h \
+    Source/Core/GSPng.h \
     Source/Core/GSPng.cpp \
+    Source/Core/PngHelper.h \
     Source/Core/PngHelper.cpp \
+    Source/Core/GSLogger.h \
+    Source/Core/GSLogger.cpp \
+    Source/Chunk/PngChunk.h \
     Source/Chunk/PngChunk.cpp \
+    Source/Chunk/IHDRChunk.h \
     Source/Chunk/IHDRChunk.cpp \
+    Source/Chunk/PLTEChunk.h \
     Source/Chunk/PLTEChunk.cpp \
-    Source/Chunk/IDATChunk.cpp \
+    Source/Chunk/TRNSChunk.h \
     Source/Chunk/TRNSChunk.cpp \
-    Source/Core/GSLogger.cpp
+    Source/Chunk/IDATChunk.h \
+    Source/Chunk/IDATChunk.cpp
 
 DESTDIR = $$PWD/../build/
 

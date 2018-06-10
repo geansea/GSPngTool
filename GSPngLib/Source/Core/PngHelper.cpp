@@ -3,10 +3,9 @@
 QByteArray PngHelper::IntToBytesBE(int value)
 {
     QByteArray bytes(4, 0);
-    bytes[0] = (char)((value >> 24) & 0xFF);
-    bytes[1] = (char)((value >> 16) & 0xFF);
-    bytes[2] = (char)((value >> 8) & 0xFF);
-    bytes[3] = (char)(value & 0xFF);
+    QDataStream dst(&bytes, QIODevice::WriteOnly);
+    dst.setByteOrder(QDataStream::BigEndian);
+    dst << (qint32)value;
     return bytes;
 }
 
