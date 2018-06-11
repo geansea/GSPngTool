@@ -6,6 +6,7 @@
 
 class IHDRChunk;
 class PLTEChunk;
+class TRNSChunk;
 
 class GSPng : public IGSPng
 {
@@ -21,19 +22,22 @@ public:
     virtual int GetSize() const;
     virtual int GetWidth() const;
     virtual int GetHeight() const;
-    virtual bool IsPaletteBased() const;
     virtual QImage GetImage() const;
 
 public:
     virtual bool WriteToFile(const QString &path) const;
 
 private:
+    bool InitChunks();
     PngChunk * GetChunk(enum PngChunk::Type type) const;
+    bool NeedsPLTChunk() const;
+    bool SupportsTRNSChunk() const;
 
 private:
     QList<PngChunk *> m_chunks;
     IHDRChunk * m_ihdrChunk;
     PLTEChunk * m_plteChunk;
+    TRNSChunk * m_trnsChunk;
 };
 
 #endif // GSPNG_H

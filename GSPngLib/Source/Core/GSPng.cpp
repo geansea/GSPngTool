@@ -1,6 +1,7 @@
 #include "GSPng.h"
 #include "Chunk/IHDRChunk.h"
 #include "Chunk/PLTEChunk.h"
+#include "Chunk/TRNSChunk.h"
 #include "PngDef.h"
 
 static const QByteArray PNG_HEADER = QByteArray("\x89PNG\x0D\x0A\x1A\x0A");
@@ -32,6 +33,7 @@ GSPng::GSPng()
     : m_chunks()
     , m_ihdrChunk(NULL)
     , m_plteChunk(NULL)
+    , m_trnsChunk(NULL)
 {
 }
 
@@ -56,12 +58,7 @@ bool GSPng::Open(QDataStream &src)
     ReturnFailOnFail(m_chunks.size() > 0);
     ReturnFailOnFail(m_chunks.first()->GetType() == PngChunk::IHDR);
     ReturnFailOnFail(m_chunks.last()->GetType() == PngChunk::IEND);
-
-    m_ihdrChunk = (IHDRChunk *)m_chunks.first();
-    if (IsPaletteBased())
-    {
-        m_plteChunk = (PLTEChunk *)GetChunk(PngChunk::PLTE);
-    }
+    ReturnFailOnFail(InitChunks());
     return true;
 }
 
@@ -79,6 +76,8 @@ void GSPng::Close()
     }
     m_chunks.clear();
     m_ihdrChunk = NULL;
+    m_plteChunk = NULL;
+    m_trnsChunk = NULL;
 }
 
 int GSPng::GetSize() const
@@ -110,18 +109,13 @@ int GSPng::GetHeight() const
     return m_ihdrChunk->GetHeight();
 }
 
-bool GSPng::IsPaletteBased() const
-{
-    if (m_ihdrChunk == NULL)
-    {
-        return false;
-    }
-    return m_ihdrChunk->GetColorType() == PngIndexedColor;
-}
-
 QImage GSPng::GetImage() const
 {
-    return QImage();
+    int width = GetWidth();
+    int height = GetHeight();
+    QImage::Format format = QImage::Format_ARGB32;
+    QImage image(width, height, format);
+    return image;
 }
 
 bool GSPng::WriteToFile(const QString &path) const
@@ -139,6 +133,21 @@ bool GSPng::WriteToFile(const QString &path) const
     return true;
 }
 
+bool GSPng::InitChunks()
+{
+    m_ihdrChunk = (IHDRChunk *)m_chunks.first();
+    if (NeedsPLTChunk())
+    {
+        m_plteChunk = (PLTEChunk *)GetChunk(PngChunk::PLTE);
+        ReturnFailOnFail(m_plteChunk != NULL);
+    }
+    if (SupportsTRNSChunk())
+    {
+        m_trnsChunk = (TRNSChunk *)GetChunk(PngChunk::tRNS);
+    }
+    return true;
+}
+
 PngChunk * GSPng::GetChunk(enum PngChunk::Type type) const
 {
     PngChunk *ret = NULL;
@@ -151,4 +160,24 @@ PngChunk * GSPng::GetChunk(enum PngChunk::Type type) const
         }
     }
     return ret;
+}
+
+bool GSPng::NeedsPLTChunk() const
+{
+    ReturnFailOnFail(m_ihdrChunk != NULL);
+    return m_ihdrChunk->GetColorType() == PngIndexedColor;
+}
+
+bool GSPng::SupportsTRNSChunk() const
+{
+    ReturnFailOnFail(m_ihdrChunk != NULL);
+    switch (m_ihdrChunk->GetColorType())
+    {
+    case PngGrayscale:
+    case PngTruecolor:
+    case PngIndexedColor:
+        return true;
+    default:
+        return false;
+    }
 }

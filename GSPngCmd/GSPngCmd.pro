@@ -18,9 +18,7 @@ INCLUDEPATH += \
     $$PWD/../GSPngLib/Header
 
 LIBS += \
-    -L$$PWD/../build \
+    -L$$OUT_PWD/../GSPngLib \
     -lGSPngLib
 
 SOURCES += main.cpp
-
-DESTDIR = $$PWD/../build/

@@ -40,8 +40,6 @@ SOURCES += \
     Source/Chunk/IDATChunk.h \
     Source/Chunk/IDATChunk.cpp
 
-DESTDIR = $$PWD/../build/
-
 unix {
     target.path = /usr/lib
     INSTALLS += target

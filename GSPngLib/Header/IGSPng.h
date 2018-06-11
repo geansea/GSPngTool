@@ -13,7 +13,6 @@ public:
     virtual int GetSize() const = 0;
     virtual int GetWidth() const = 0;
     virtual int GetHeight() const = 0;
-    virtual bool IsPaletteBased() const = 0;
     virtual QImage GetImage() const = 0;
 
 public:
