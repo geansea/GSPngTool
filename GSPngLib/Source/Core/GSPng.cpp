@@ -9,13 +9,13 @@ static const QByteArray PNG_HEADER = QByteArray("\x89PNG\x0D\x0A\x1A\x0A");
 IGSPng * IGSPng::CreateFromFile(const QString &path)
 {
     QFile file(path);
-    ReturnNullOnFail(file.open(QIODevice::ReadOnly));
+    GSRNF(file.open(QIODevice::ReadOnly));
     QDataStream stream(&file);
     stream.setByteOrder(QDataStream::BigEndian);
 
     GSPng *png = new GSPng();
     GSPointerScope<GSPng> scope(png);
-    ReturnNullOnFail(png->Open(stream));
+    GSRNF(png->Open(stream));
     scope.Cancel();
     return png;
 }
@@ -24,7 +24,7 @@ IGSPng * IGSPng::CreateFromImage(const QImage &image)
 {
     GSPng *png = new GSPng();
     GSPointerScope<GSPng> scope(png);
-    ReturnNullOnFail(png->Open(image));
+    GSRNF(png->Open(image));
     scope.Cancel();
     return png;
 }
@@ -47,18 +47,18 @@ bool GSPng::Open(QDataStream &src)
     Close();
     src.setByteOrder(QDataStream::BigEndian);
     QByteArray header(PNG_HEADER.size(), 0);
-    ReturnFailOnFail(src.readRawData(header.data(), header.size()) == header.size());
-    ReturnFailOnFail(PNG_HEADER == header);
+    GSRFF(src.readRawData(header.data(), header.size()) == header.size());
+    GSRFF(PNG_HEADER == header);
     do
     {
         PngChunk *chunk = PngChunk::Create(src);
-        ReturnFailOnFail(chunk != NULL);
+        GSRFF(chunk != NULL);
         m_chunks.append(chunk);
     } while (!src.atEnd());
-    ReturnFailOnFail(m_chunks.size() > 0);
-    ReturnFailOnFail(m_chunks.first()->GetType() == PngChunk::IHDR);
-    ReturnFailOnFail(m_chunks.last()->GetType() == PngChunk::IEND);
-    ReturnFailOnFail(InitChunks());
+    GSRFF(m_chunks.size() > 0);
+    GSRFF(m_chunks.first()->GetType() == PngChunk::IHDR);
+    GSRFF(m_chunks.last()->GetType() == PngChunk::IEND);
+    GSRFF(InitChunks());
     return true;
 }
 
@@ -121,14 +121,14 @@ QImage GSPng::GetImage() const
 bool GSPng::WriteToFile(const QString &path) const
 {
     QFile file(path);
-    ReturnFailOnFail(file.open(QIODevice::WriteOnly));
+    GSRFF(file.open(QIODevice::WriteOnly));
     QDataStream dst(&file);
     dst.setByteOrder(QDataStream::BigEndian);
 
-    ReturnFailOnFail(dst.writeRawData(PNG_HEADER.data(), PNG_HEADER.size()) == PNG_HEADER.size());
+    GSRFF(dst.writeRawData(PNG_HEADER.data(), PNG_HEADER.size()) == PNG_HEADER.size());
     foreach (PngChunk *chunk, m_chunks)
     {
-        ReturnFailOnFail(chunk->Write(dst));
+        GSRFF(chunk->Write(dst));
     }
     return true;
 }
@@ -139,7 +139,7 @@ bool GSPng::InitChunks()
     if (NeedsPLTChunk())
     {
         m_plteChunk = (PLTEChunk *)GetChunk(PngChunk::PLTE);
-        ReturnFailOnFail(m_plteChunk != NULL);
+        GSRFF(m_plteChunk != NULL);
     }
     if (SupportsTRNSChunk())
     {
@@ -164,13 +164,13 @@ PngChunk * GSPng::GetChunk(enum PngChunk::Type type) const
 
 bool GSPng::NeedsPLTChunk() const
 {
-    ReturnFailOnFail(m_ihdrChunk != NULL);
+    GSRFF(m_ihdrChunk != NULL);
     return m_ihdrChunk->GetColorType() == PngIndexedColor;
 }
 
 bool GSPng::SupportsTRNSChunk() const
 {
-    ReturnFailOnFail(m_ihdrChunk != NULL);
+    GSRFF(m_ihdrChunk != NULL);
     switch (m_ihdrChunk->GetColorType())
     {
     case PngGrayscale:

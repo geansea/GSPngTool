@@ -69,8 +69,8 @@ int IHDRChunk::GetInterlaceMethod() const
 
 bool IHDRChunk::LoadData()
 {
-    ReturnFailOnFail(PngChunk::LoadData());
-    ReturnFailOnFail(m_data.size() == CHUNK_LENGTH);
+    GSRFF(PngChunk::LoadData());
+    GSRFF(m_data.size() == CHUNK_LENGTH);
     QDataStream src(m_data);
     src.setByteOrder(QDataStream::BigEndian);
     src >> m_width;
@@ -80,8 +80,8 @@ bool IHDRChunk::LoadData()
     src >> m_compressionMethod;
     src >> m_filterMethod;
     src >> m_interlaceMethod;
-    ReturnFailOnFail(src.status() == QDataStream::Status::Ok);
-    ReturnFailOnFail(src.atEnd());
+    GSRFF(src.status() == QDataStream::Status::Ok);
+    GSRFF(src.atEnd());
     return true;
 }
 
@@ -97,8 +97,8 @@ bool IHDRChunk::UpdateData()
     dst << m_compressionMethod;
     dst << m_filterMethod;
     dst << m_interlaceMethod;
-    ReturnFailOnFail(dst.status() == QDataStream::Status::Ok);
-    ReturnFailOnFail(dst.atEnd());
-    ReturnFailOnFail(PngChunk::UpdateData());
+    GSRFF(dst.status() == QDataStream::Status::Ok);
+    GSRFF(dst.atEnd());
+    GSRFF(PngChunk::UpdateData());
     return true;
 }

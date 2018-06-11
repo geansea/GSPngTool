@@ -3,38 +3,42 @@
 
 #include <QtCore>
 
-#define ReturnFailOnFail(x) do  \
-{                               \
-    if (!(x))                   \
-    {                           \
-        return false;           \
-    }                           \
+// Retuen Fail on Fail
+#define GSRFF(x) do     \
+{                       \
+    if (!(x))           \
+    {                   \
+        return false;   \
+    }                   \
 } while (0)
 
-#define ReturnNullOnFail(x) do  \
-{                               \
-    if (!(x))                   \
-    {                           \
-        return NULL;            \
-    }                           \
+// Retuen Null on Fail
+#define GSRNF(x) do     \
+{                       \
+    if (!(x))           \
+    {                   \
+        return NULL;    \
+    }                   \
 } while (0)
 
-#define ReturnFailCheck(x, msg) do  \
-{                                   \
-    if (!(x))                       \
-    {                               \
-        GSError(msg);               \
-        return false;               \
-    }                               \
+// Retuen Fail on Fail with Log
+#define GSRFFL(x, msg) do   \
+{                           \
+    if (!(x))               \
+    {                       \
+        GSError(msg);       \
+        return false;       \
+    }                       \
 } while (0)
 
-#define ReturnNullCheck(x, msg) do  \
-{                                   \
-    if (!(x))                       \
-    {                               \
-        GSError(msg);               \
-        return NULL;                \
-    }                               \
+// Retuen Null on Fail with Log
+#define GSRNFL(x, msg) do   \
+{                           \
+    if (!(x))               \
+    {                       \
+        GSError(msg);       \
+        return NULL;        \
+    }                       \
 } while (0)
 
 template<class T>

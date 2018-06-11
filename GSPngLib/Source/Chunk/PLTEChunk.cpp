@@ -17,8 +17,8 @@ const QVector<QRgb> & PLTEChunk::GetColors() const
 
 bool PLTEChunk::LoadData()
 {
-    ReturnFailOnFail(PngChunk::LoadData());
-    ReturnFailOnFail(m_data.size() % 3 == 0);
+    GSRFF(PngChunk::LoadData());
+    GSRFF(m_data.size() % 3 == 0);
     for (int i = 0; i < m_data.size(); i += 3)
     {
         quint8 r = (quint8)m_data[i];
@@ -39,6 +39,6 @@ bool PLTEChunk::UpdateData()
         m_data[i * 3 + 1] = (char)qGreen(rgb);
         m_data[i * 3 + 2] = (char)qBlue(rgb);
     }
-    ReturnFailOnFail(PngChunk::UpdateData());
+    GSRFF(PngChunk::UpdateData());
     return true;
 }

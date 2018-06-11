@@ -23,10 +23,10 @@ PngChunk * PngChunk::Create(QDataStream &src)
         break;
     }
     GSPointerScope<PngChunk> scope(chunk);
-    ReturnNullOnFail(chunk->Read(src, length));
+    GSRNF(chunk->Read(src, length));
     quint32 crc = 0;
     src >> crc;
-    ReturnNullOnFail(chunk->GetCRC() == crc);
+    GSRNF(chunk->GetCRC() == crc);
     scope.Cancel();
     return chunk;
 }
@@ -55,19 +55,19 @@ bool PngChunk::Read(QDataStream &src, quint32 length)
 {
     m_data.resize(length);
     src.readRawData(m_data.data(), m_data.size());
-    ReturnFailOnFail(QDataStream::Status::Ok == src.status());
-    ReturnFailOnFail(LoadData());
+    GSRFF(QDataStream::Status::Ok == src.status());
+    GSRFF(LoadData());
     return true;
 }
 
 bool PngChunk::Write(QDataStream &dst)
 {
-    ReturnFailOnFail(UpdateData());
+    GSRFF(UpdateData());
     dst << m_data.size();
     dst << m_type;
     dst.writeRawData(m_data.data(), m_data.size());
     dst << GetCRC();
-    ReturnFailOnFail(QDataStream::Status::Ok == dst.status());
+    GSRFF(QDataStream::Status::Ok == dst.status());
     return true;
 }
 
