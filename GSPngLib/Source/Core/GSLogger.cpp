@@ -1,23 +1,13 @@
 #include "GSLogger.h"
 
-void GSLog(QString msg)
+void GSLog(GSLogType type, QString msg)
 {
-    GSLogger::GetInstance()->LogInfo(msg);
+    GSLogger::GetInstance()->Log(type, msg);
 }
 
-void GSWarning(QString msg)
+QString GSGetLog(int logType)
 {
-    GSLogger::GetInstance()->LogWarning(msg);
-}
-
-void GSError(QString msg)
-{
-    GSLogger::GetInstance()->LogError(msg);
-}
-
-QString GSGetLog()
-{
-    return GSLogger::GetInstance()->GetLog();
+    return GSLogger::GetInstance()->GetLog(logType);
 }
 
 GSLogger * GSLogger::GetInstance()
@@ -30,33 +20,51 @@ GSLogger * GSLogger::GetInstance()
     return pLogger;
 }
 
-void GSLogger::LogInfo(QString msg)
+void GSLogger::Log(GSLogType type, QString msg)
 {
-    if (!msg.isEmpty())
+    if (msg.isEmpty())
     {
-        m_log += "Info: " + msg + "\n";
+        return;
     }
+    LogLine line;
+    line.type = type;
+    line.content = msg;
+    m_lines.push_back(line);
 }
 
-void GSLogger::LogWarning(QString msg)
+QString GSLogger::GetLog(int logType) const
 {
-    if (!msg.isEmpty())
+    QString log;
+    foreach (LogLine line, m_lines)
     {
-        m_log += "Warning: " + msg + "\n";
+        if (line.type & logType)
+        {
+            switch (line.type)
+            {
+            case GSLogInfo:
+                log += "INFO: ";
+                break;
+            case GSLogWarning:
+                log += "WARN: ";
+                break;
+            case GSLogError:
+                log += "ERRO: ";
+                break;
+            default:
+                log += "XXXX: ";
+                break;
+            }
+            log += line.content;
+            log += "\n";
+        }
     }
+    return log;
 }
 
-void GSLogger::LogError(QString msg)
+GSLogger::LogLine::LogLine()
+    : type(GSLogInfo)
+    , content()
 {
-    if (!msg.isEmpty())
-    {
-        m_log += "Error: " + msg + "\n";
-    }
-}
-
-QString GSLogger::GetLog() const
-{
-    return m_log;
 }
 
 GSLogger::GSLogger()

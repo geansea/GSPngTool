@@ -9,16 +9,22 @@ public:
     static GSLogger * GetInstance();
 
 public:
-    void LogInfo(QString msg);
-    void LogWarning(QString msg);
-    void LogError(QString msg);
-    QString GetLog() const;
+    void Log(GSLogType type, QString msg);
+    QString GetLog(int logType) const;
 
 private:
+    struct LogLine
+    {
+        GSLogType type;
+        QString content;
+
+        LogLine();
+    };
+
     GSLogger();
 
 private:
-    QString m_log;
+    QList<LogLine> m_lines;
 };
 
 #endif // GSLOGGER_H

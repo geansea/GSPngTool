@@ -31,6 +31,21 @@ PngChunk * PngChunk::Create(QDataStream &src)
     return chunk;
 }
 
+bool PngChunk::AllowsMultiple(Type type)
+{
+    switch (type)
+    {
+    case IDAT:
+    case sPLT:
+    case iTXt:
+    case tEXt:
+    case zTXt:
+        return true;
+    default:
+        return false;
+    }
+}
+
 PngChunk::PngChunk(qint32 type)
     : m_type(type)
     , m_data()

@@ -79,9 +79,34 @@ private:
     bool m_cancelled;
 };
 
-void GSLog(QString msg);
-void GSWarning(QString msg);
-void GSError(QString msg);
-QString GSGetLog();
+enum GSLogType
+{
+    GSLogInfo    = 1 << 0,
+    GSLogWarning = 1 << 1,
+    GSLogError   = 1 << 2
+};
+
+void GSLog(GSLogType type, QString msg);
+QString GSGetLog(int logType);
+
+inline void GSInfo(QString msg)
+{
+    GSLog(GSLogInfo, msg);
+}
+
+inline void GSWarning(QString msg)
+{
+    GSLog(GSLogWarning, msg);
+}
+
+inline void GSError(QString msg)
+{
+    GSLog(GSLogError, msg);
+}
+
+inline QString GSGetLog()
+{
+    return GSGetLog(GSLogInfo | GSLogWarning | GSLogError);
+}
 
 #endif // GSDEF_H

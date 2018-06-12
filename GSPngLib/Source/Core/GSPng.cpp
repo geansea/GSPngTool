@@ -2,7 +2,7 @@
 #include "Chunk/IHDRChunk.h"
 #include "Chunk/PLTEChunk.h"
 #include "Chunk/TRNSChunk.h"
-#include "PngDef.h"
+#include "PngHelper.h"
 
 static const QByteArray PNG_HEADER = QByteArray("\x89PNG\x0D\x0A\x1A\x0A");
 
@@ -56,8 +56,6 @@ bool GSPng::Open(QDataStream &src)
         m_chunks.append(chunk);
     } while (!src.atEnd());
     GSRFF(m_chunks.size() > 0);
-    GSRFF(m_chunks.first()->GetType() == PngChunk::IHDR);
-    GSRFF(m_chunks.last()->GetType() == PngChunk::IEND);
     GSRFF(InitChunks());
     return true;
 }
@@ -135,6 +133,44 @@ bool GSPng::WriteToFile(const QString &path) const
 
 bool GSPng::InitChunks()
 {
+    int ihdrIndex = -1;
+    int plteIndex = -1;
+    int idatStartIndex = -1;
+    int idatEndIndex = -1;
+    int iendIndex = -1;
+    int trnsIndex = -1;
+    QSet<PngChunk::Type> appearedChunks;
+
+    int index = 0;
+    foreach (PngChunk *chunk, m_chunks)
+    {
+        PngChunk::Type type = chunk->GetType();
+        if (appearedChunks.contains(type))
+        {
+            GSRFFL(PngChunk::AllowsMultiple(type), QString(PngHelper::IntToBytesBE(type)) + " already found");
+        }
+        else
+        {
+            appearedChunks.insert(type);
+        }
+
+        switch (type)
+        {
+        case PngChunk::IHDR:
+            ihdrIndex = index;
+            break;
+        case PngChunk::PLTE:
+            plteIndex = index;
+            break;
+        default:
+            break;
+        }
+        ++index;
+    }
+
+    GSRFFL(ihdrIndex == 0, "IHDR should be the first chunk");
+    GSRFFL(iendIndex + 1 == m_chunks.size(), "IEND should be the last chunk");
+
     m_ihdrChunk = (IHDRChunk *)m_chunks.first();
     if (NeedsPLTChunk())
     {
