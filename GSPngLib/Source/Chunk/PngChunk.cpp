@@ -19,7 +19,7 @@ PngChunk * PngChunk::Create(QDataStream &src)
         chunk = new PLTEChunk();
         break;
     default:
-        chunk = new PngChunk(type);
+        chunk = new PngChunk((Type) type);
         break;
     }
     GSPointerScope<PngChunk> scope(chunk);
@@ -46,7 +46,7 @@ bool PngChunk::AllowsMultiple(Type type)
     }
 }
 
-PngChunk::PngChunk(qint32 type)
+PngChunk::PngChunk(Type type)
     : m_type(type)
     , m_data()
 {
@@ -56,7 +56,7 @@ PngChunk::~PngChunk()
 {
 }
 
-int PngChunk::GetType() const
+PngChunk::Type PngChunk::GetType() const
 {
     return m_type;
 }

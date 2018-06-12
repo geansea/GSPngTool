@@ -55,7 +55,6 @@ bool GSPng::Open(QDataStream &src)
         GSRFF(chunk != NULL);
         m_chunks.append(chunk);
     } while (!src.atEnd());
-    GSRFF(m_chunks.size() > 0);
     GSRFF(InitChunks());
     return true;
 }
@@ -133,14 +132,12 @@ bool GSPng::WriteToFile(const QString &path) const
 
 bool GSPng::InitChunks()
 {
-    int ihdrIndex = -1;
-    int plteIndex = -1;
-    int idatStartIndex = -1;
-    int idatEndIndex = -1;
-    int iendIndex = -1;
-    int trnsIndex = -1;
+    GSRFF(m_chunks.size() > 0);
+    GSRFFL(m_chunks.first()->GetType() == PngChunk::IHDR, "IHDR should be the first chunk");
+    GSRFFL(m_chunks.last()->GetType() == PngChunk::IEND, "IEND should be the last chunk");
     QSet<PngChunk::Type> appearedChunks;
-
+    int idatStartIndex = 0;
+    int idatEndIndex = 0;
     int index = 0;
     foreach (PngChunk *chunk, m_chunks)
     {
@@ -157,29 +154,42 @@ bool GSPng::InitChunks()
         switch (type)
         {
         case PngChunk::IHDR:
-            ihdrIndex = index;
+            m_ihdrChunk = (IHDRChunk *) chunk;
             break;
         case PngChunk::PLTE:
-            plteIndex = index;
+            GSRFFL(NeedsPLTChunk(), "PLTE chunk is not needed");
+            m_plteChunk = (PLTEChunk *) chunk;
+            break;
+        case PngChunk::IDAT:
+            if (NeedsPLTChunk())
+            {
+                GSRFFL(m_plteChunk != NULL, "IDAT chunk should after PLTE chunk");
+            }
+            if (idatStartIndex == 0)
+            {
+                idatStartIndex = index;
+            }
+            else
+            {
+                GSRFFL(idatEndIndex == index, "IDAT chunks should be consecutive");
+            }
+            idatEndIndex = index + 1;
+            break;
+        case PngChunk::tRNS:
+            if (NeedsPLTChunk())
+            {
+                GSRFFL(m_plteChunk != NULL, "tRNS chunk should after PLTE chunk");
+            }
+            GSRFFL(idatStartIndex == 0, "tRNS chunk should before IDAT chunk");
+            if (SupportsTRNSChunk())
+            {
+                m_trnsChunk = (TRNSChunk *) chunk;
+            }
             break;
         default:
             break;
         }
         ++index;
-    }
-
-    GSRFFL(ihdrIndex == 0, "IHDR should be the first chunk");
-    GSRFFL(iendIndex + 1 == m_chunks.size(), "IEND should be the last chunk");
-
-    m_ihdrChunk = (IHDRChunk *)m_chunks.first();
-    if (NeedsPLTChunk())
-    {
-        m_plteChunk = (PLTEChunk *)GetChunk(PngChunk::PLTE);
-        GSRFF(m_plteChunk != NULL);
-    }
-    if (SupportsTRNSChunk())
-    {
-        m_trnsChunk = (TRNSChunk *)GetChunk(PngChunk::tRNS);
     }
     return true;
 }

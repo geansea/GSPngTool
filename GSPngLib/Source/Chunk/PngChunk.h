@@ -33,10 +33,10 @@ public:
     static bool AllowsMultiple(Type type);
 
 public:
-    PngChunk(qint32 type);
+    PngChunk(Type type);
     virtual ~PngChunk();
 
-    int GetType() const;
+    Type GetType() const;
     int GetSize() const;
 
     bool Read(QDataStream &src, quint32 length);
@@ -50,7 +50,7 @@ private:
     quint32 GetCRC() const;
 
 protected:
-    qint32     m_type;
+    Type       m_type;
     QByteArray m_data;
 };
 
