@@ -22,16 +22,26 @@ public:
     virtual int GetSize() const;
     virtual int GetWidth() const;
     virtual int GetHeight() const;
+    virtual QString GetMetadata() const;
     virtual QImage GetImage() const;
 
 public:
+    virtual void DoLosslessOptimize();
+    virtual void DoLossyOptimize();
     virtual bool WriteToFile(const QString &path) const;
 
 private:
     bool InitChunks();
-    PngChunk * GetChunk(enum PngChunk::Type type) const;
     bool NeedsPLTChunk() const;
     bool SupportsTRNSChunk() const;
+
+    // Lossless optimization
+    void RemoveUnnecessaryChunks();
+    void ChooseBetterColorMode();
+    void ChooseBetterFilterMode();
+
+    // Lossy optimization
+    void ReduceColors();
 
 private:
     QList<PngChunk *> m_chunks;

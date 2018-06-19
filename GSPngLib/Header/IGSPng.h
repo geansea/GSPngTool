@@ -13,9 +13,12 @@ public:
     virtual int GetSize() const = 0;
     virtual int GetWidth() const = 0;
     virtual int GetHeight() const = 0;
+    virtual QString GetMetadata() const = 0;
     virtual QImage GetImage() const = 0;
 
 public:
+    virtual void DoLosslessOptimize() = 0;
+    virtual void DoLossyOptimize() = 0;
     virtual bool WriteToFile(const QString &path) const = 0;
 
 public:

@@ -106,6 +106,12 @@ int GSPng::GetHeight() const
     return m_ihdrChunk->GetHeight();
 }
 
+QString GSPng::GetMetadata() const
+{
+    QString meta;
+    retuen meta;
+}
+
 QImage GSPng::GetImage() const
 {
     int width = GetWidth();
@@ -113,6 +119,21 @@ QImage GSPng::GetImage() const
     QImage::Format format = QImage::Format_ARGB32;
     QImage image(width, height, format);
     return image;
+}
+
+void GSPng::DoLosslessOptimize()
+{
+    RemoveUnnecessaryChunks();
+    ChooseBetterColorMode();
+    ChooseBetterFilterMode();
+}
+
+void GSPng::DoLossyOptimize()
+{
+    RemoveUnnecessaryChunks();
+    ReduceColors();
+    ChooseBetterColorMode();
+    ChooseBetterFilterMode();
 }
 
 bool GSPng::WriteToFile(const QString &path) const
@@ -132,9 +153,11 @@ bool GSPng::WriteToFile(const QString &path) const
 
 bool GSPng::InitChunks()
 {
+    // Check chunks order
     GSRFF(m_chunks.size() > 0);
     GSRFFL(m_chunks.first()->GetType() == PngChunk::IHDR, "IHDR should be the first chunk");
     GSRFFL(m_chunks.last()->GetType() == PngChunk::IEND, "IEND should be the last chunk");
+
     QSet<PngChunk::Type> appearedChunks;
     int idatStartIndex = 0;
     int idatEndIndex = 0;
@@ -144,7 +167,7 @@ bool GSPng::InitChunks()
         PngChunk::Type type = chunk->GetType();
         if (appearedChunks.contains(type))
         {
-            GSRFFL(PngChunk::AllowsMultiple(type), QString(PngHelper::IntToBytesBE(type)) + " already found");
+            GSRFFL(PngChunk::AllowsMultiple(type), QString(PngHelper::IntToBytesBE(type)) + " is not Multiple allowed");
         }
         else
         {
@@ -157,14 +180,9 @@ bool GSPng::InitChunks()
             m_ihdrChunk = (IHDRChunk *) chunk;
             break;
         case PngChunk::PLTE:
-            GSRFFL(NeedsPLTChunk(), "PLTE chunk is not needed");
             m_plteChunk = (PLTEChunk *) chunk;
             break;
         case PngChunk::IDAT:
-            if (NeedsPLTChunk())
-            {
-                GSRFFL(m_plteChunk != NULL, "IDAT chunk should after PLTE chunk");
-            }
             if (idatStartIndex == 0)
             {
                 idatStartIndex = index;
@@ -176,15 +194,8 @@ bool GSPng::InitChunks()
             idatEndIndex = index + 1;
             break;
         case PngChunk::tRNS:
-            if (NeedsPLTChunk())
-            {
-                GSRFFL(m_plteChunk != NULL, "tRNS chunk should after PLTE chunk");
-            }
             GSRFFL(idatStartIndex == 0, "tRNS chunk should before IDAT chunk");
-            if (SupportsTRNSChunk())
-            {
-                m_trnsChunk = (TRNSChunk *) chunk;
-            }
+            m_trnsChunk = (TRNSChunk *) chunk;
             break;
         default:
             break;
@@ -192,20 +203,6 @@ bool GSPng::InitChunks()
         ++index;
     }
     return true;
-}
-
-PngChunk * GSPng::GetChunk(enum PngChunk::Type type) const
-{
-    PngChunk *ret = NULL;
-    foreach (PngChunk *chunk, m_chunks)
-    {
-        if (chunk->GetType() == type)
-        {
-            ret = chunk;
-            break;
-        }
-    }
-    return ret;
 }
 
 bool GSPng::NeedsPLTChunk() const
@@ -226,4 +223,20 @@ bool GSPng::SupportsTRNSChunk() const
     default:
         return false;
     }
+}
+
+void GSPng::RemoveUnnecessaryChunks()
+{
+}
+
+void GSPng::ChooseBetterColorMode()
+{
+}
+
+void GSPng::ChooseBetterFilterMode()
+{
+}
+
+void GSPng::ReduceColors()
+{
 }
