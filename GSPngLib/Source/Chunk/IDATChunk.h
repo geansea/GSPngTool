@@ -12,10 +12,6 @@ public:
 public:
     QByteArray GetImageData() const;
     void SetImageData(const QByteArray &imageData);
-
-protected:
-    virtual bool LoadData();
-    virtual bool UpdateData();
 };
 
 #endif // IDATCHUNK_H

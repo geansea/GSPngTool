@@ -1,6 +1,7 @@
 #include "GSPng.h"
 #include "Chunk/IHDRChunk.h"
 #include "Chunk/PLTEChunk.h"
+#include "Chunk/IDATChunk.h"
 #include "Chunk/TRNSChunk.h"
 #include "PngHelper.h"
 
@@ -33,6 +34,7 @@ GSPng::GSPng()
     : m_chunks()
     , m_ihdrChunk(NULL)
     , m_plteChunk(NULL)
+    , m_dataChunks()
     , m_trnsChunk(NULL)
 {
 }
@@ -74,6 +76,7 @@ void GSPng::Close()
     m_chunks.clear();
     m_ihdrChunk = NULL;
     m_plteChunk = NULL;
+    m_dataChunks.clear();
     m_trnsChunk = NULL;
 }
 
@@ -109,7 +112,7 @@ int GSPng::GetHeight() const
 QString GSPng::GetMetadata() const
 {
     QString meta;
-    retuen meta;
+    return meta;
 }
 
 QImage GSPng::GetImage() const

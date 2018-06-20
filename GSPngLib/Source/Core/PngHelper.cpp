@@ -9,6 +9,11 @@ QByteArray PngHelper::IntToBytesBE(int value)
     return bytes;
 }
 
+QString PngHelper::IntToString(int value)
+{
+    return QString::fromLatin1(IntToBytesBE(value));
+}
+
 quint32 PngHelper::UpdateCRC32(quint32 old, const QByteArray &bytes)
 {
     static QVector<quint32> CRC_TABLE;

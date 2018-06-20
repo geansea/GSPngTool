@@ -39,7 +39,6 @@ public:
     Type GetType() const;
     int GetSize() const;
 
-    bool Read(QDataStream &src, quint32 length);
     bool Write(QDataStream &dst);
 
 protected:
@@ -47,6 +46,7 @@ protected:
     virtual bool UpdateData();
 
 private:
+    bool Read(QDataStream &src, quint32 length);
     quint32 GetCRC() const;
 
 protected:

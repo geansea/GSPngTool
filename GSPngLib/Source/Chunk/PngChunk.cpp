@@ -1,6 +1,8 @@
 #include "PngChunk.h"
 #include "IHDRChunk.h"
 #include "PLTEChunk.h"
+#include "IDATChunk.h"
+#include "TRNSChunk.h"
 #include "Core/PngHelper.h"
 
 PngChunk * PngChunk::Create(QDataStream &src)
@@ -17,6 +19,12 @@ PngChunk * PngChunk::Create(QDataStream &src)
         break;
     case PLTE:
         chunk = new PLTEChunk();
+        break;
+    case IDAT:
+        chunk = new IDATChunk();
+        break;
+    case tRNS:
+        chunk = new TRNSChunk();
         break;
     default:
         chunk = new PngChunk((Type) type);
@@ -66,15 +74,6 @@ int PngChunk::GetSize() const
     return 4 + 4 + m_data.size() + 4;
 }
 
-bool PngChunk::Read(QDataStream &src, quint32 length)
-{
-    m_data.resize(length);
-    src.readRawData(m_data.data(), m_data.size());
-    GSRFF(QDataStream::Status::Ok == src.status());
-    GSRFF(LoadData());
-    return true;
-}
-
 bool PngChunk::Write(QDataStream &dst)
 {
     GSRFF(UpdateData());
@@ -93,6 +92,15 @@ bool PngChunk::LoadData()
 
 bool PngChunk::UpdateData()
 {
+    return true;
+}
+
+bool PngChunk::Read(QDataStream &src, quint32 length)
+{
+    m_data.resize(length);
+    src.readRawData(m_data.data(), m_data.size());
+    GSRFF(QDataStream::Status::Ok == src.status());
+    GSRFF(LoadData());
     return true;
 }
 

@@ -6,6 +6,7 @@
 
 class IHDRChunk;
 class PLTEChunk;
+class IDATChunk;
 class TRNSChunk;
 
 class GSPng : public IGSPng
@@ -44,10 +45,11 @@ private:
     void ReduceColors();
 
 private:
-    QList<PngChunk *> m_chunks;
-    IHDRChunk * m_ihdrChunk;
-    PLTEChunk * m_plteChunk;
-    TRNSChunk * m_trnsChunk;
+    QList<PngChunk *>  m_chunks;
+    IHDRChunk *        m_ihdrChunk;
+    PLTEChunk *        m_plteChunk;
+    QList<IDATChunk *> m_dataChunks;
+    TRNSChunk *        m_trnsChunk;
 };
 
 #endif // GSPNG_H

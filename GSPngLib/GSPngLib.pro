@@ -35,10 +35,10 @@ SOURCES += \
     Source/Chunk/IHDRChunk.cpp \
     Source/Chunk/PLTEChunk.h \
     Source/Chunk/PLTEChunk.cpp \
-    Source/Chunk/TRNSChunk.h \
-    Source/Chunk/TRNSChunk.cpp \
     Source/Chunk/IDATChunk.h \
-    Source/Chunk/IDATChunk.cpp
+    Source/Chunk/IDATChunk.cpp \
+    Source/Chunk/TRNSChunk.h \
+    Source/Chunk/TRNSChunk.cpp
 
 unix {
     target.path = /usr/lib
