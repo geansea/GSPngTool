@@ -38,6 +38,7 @@ public:
 
     Type GetType() const;
     int GetSize() const;
+    QString GetMetadata() const;
 
     bool Write(QDataStream &dst);
 

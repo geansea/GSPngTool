@@ -74,6 +74,16 @@ int PngChunk::GetSize() const
     return 4 + 4 + m_data.size() + 4;
 }
 
+QString PngChunk::GetMetadata() const
+{
+    QString meta;
+    meta += "================\n";
+    meta += QString(PngHelper::IntToBytesBE(m_type)) + "\n";
+    meta += "----------------\n";
+    meta += "size:   " + QString::number(GetSize()) + "\n";
+    return meta;
+}
+
 bool PngChunk::Write(QDataStream &dst)
 {
     GSRFF(UpdateData());

@@ -83,7 +83,7 @@ void GSPng::Close()
 int GSPng::GetSize() const
 {
     int size = PNG_HEADER.size();
-    foreach (PngChunk *chunk, m_chunks)
+    foreach (const PngChunk *chunk, m_chunks)
     {
         int chunkSize = chunk->GetSize();
         size += chunkSize;
@@ -112,6 +112,13 @@ int GSPng::GetHeight() const
 QString GSPng::GetMetadata() const
 {
     QString meta;
+    meta += "chunks: " + QString::number(m_chunks.size()) + "\n";
+    foreach (const PngChunk *chunk, m_chunks)
+    {
+        QString chunkMeta = chunk->GetMetadata();
+        meta += chunkMeta;
+    }
+    meta += "================\n";
     return meta;
 }
 
@@ -122,6 +129,11 @@ QImage GSPng::GetImage() const
     QImage::Format format = QImage::Format_ARGB32;
     QImage image(width, height, format);
     return image;
+}
+
+void GSPng::DoQuickOptimize()
+{
+    RemoveUnnecessaryChunks();
 }
 
 void GSPng::DoLosslessOptimize()

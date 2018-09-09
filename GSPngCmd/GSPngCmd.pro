@@ -21,4 +21,9 @@ LIBS += \
     -L$$OUT_PWD/../GSPngLib \
     -lGSPngLib
 
-SOURCES += main.cpp
+SOURCES += \
+    main.cpp \
+    PngCmdArgs.h \
+    PngCmdArgs.cpp \
+    PngCmdUtils.h \
+    PngCmdUtils.cpp

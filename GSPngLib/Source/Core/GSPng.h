@@ -27,6 +27,7 @@ public:
     virtual QImage GetImage() const;
 
 public:
+    virtual void DoQuickOptimize();
     virtual void DoLosslessOptimize();
     virtual void DoLossyOptimize();
     virtual bool WriteToFile(const QString &path) const;
