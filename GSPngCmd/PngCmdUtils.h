@@ -7,6 +7,7 @@ class PngCmdUtils
 {
 public:
     static bool ShowInfo(QString filePath);
+    static bool OpiFile(QString inFilePath, QString outFilePath);
 
 private:
     PngCmdUtils() {}

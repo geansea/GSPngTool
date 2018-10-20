@@ -4,12 +4,14 @@
 
 static const QString CMD_HELP = "-h";
 static const QString CMD_INFO = "-i";
+static const QString CMD_OPT1 = "-o1";
 
 bool ShowHelp()
 {
     printf("Usage: GSPngCmd <command> [input path] [output path]\n");
     printf("    -h  show help\n");
     printf("    -i  show input file info\n");
+    printf("    -o1 \n");
     return true;
 }
 
@@ -25,6 +27,10 @@ int main(int argc, char *argv[])
     else if (cmd == CMD_INFO)
     {
         ret = PngCmdUtils::ShowInfo(args.GetInputPath());
+    }
+    else if (cmd == CMD_OPT1)
+    {
+        ret = PngCmdUtils::OpiFile(args.GetInputPath(), args.GetOutputPath());
     }
     else
     {

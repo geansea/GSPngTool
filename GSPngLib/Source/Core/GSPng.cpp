@@ -242,6 +242,24 @@ bool GSPng::SupportsTRNSChunk() const
 
 void GSPng::RemoveUnnecessaryChunks()
 {
+    QList<PngChunk *> chunks;
+    foreach (PngChunk *chunk, m_chunks)
+    {
+        PngChunk::Type type = chunk->GetType();
+        switch (type)
+        {
+        case PngChunk::IHDR:
+        case PngChunk::PLTE:
+        case PngChunk::tRNS:
+        case PngChunk::IDAT:
+        case PngChunk::IEND:
+            chunks.append(chunk);
+            break;
+        default:
+            SafeDelete(chunk);
+        }
+    }
+    m_chunks = chunks;
 }
 
 void GSPng::ChooseBetterColorMode()

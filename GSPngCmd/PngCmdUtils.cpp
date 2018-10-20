@@ -16,3 +16,15 @@ bool PngCmdUtils::ShowInfo(QString filePath)
     SafeDelete(png);
     return true;
 }
+
+bool PngCmdUtils::OpiFile(QString inFilePath, QString outFilePath)
+{
+    IGSPng *png = IGSPng::CreateFromFile(inFilePath);
+    GSRFF(png != NULL);
+
+    png->DoQuickOptimize();
+    GSRFF(png->WriteToFile(outFilePath));
+
+    SafeDelete(png);
+    return true;
+}
